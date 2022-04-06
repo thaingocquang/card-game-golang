@@ -13,7 +13,7 @@ import (
 type Player struct{}
 
 // Create ...
-func (p Player) Create(player dto.Player) error {
+func (p Player) Create(player model.Player) error {
 	var playerCol = database.PlayerCol()
 
 	// InsertOne
@@ -99,4 +99,19 @@ func (p Player) GetList(page, limit int) ([]model.Player, error) {
 	}
 
 	return players, nil
+}
+
+func (p Player) IsEmailExisted(email string) (bool, error) {
+	var playerCol = database.PlayerCol()
+
+	// filter
+	filter := bson.M{"email": email}
+
+	//
+	count, err := playerCol.CountDocuments(context.Background(), filter)
+	if err != nil {
+		return false, err
+	}
+
+	return count > 0, nil
 }

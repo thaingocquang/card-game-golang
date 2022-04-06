@@ -4,14 +4,11 @@ import (
 	"card-game-golang/config"
 	"card-game-golang/module/database"
 	"card-game-golang/route"
-	"fmt"
 	"github.com/labstack/echo/v4"
 )
 
 // init ...
 func init() {
-	fmt.Println("HELLO")
-
 	config.Init()
 	database.Connect()
 }

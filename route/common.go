@@ -2,19 +2,23 @@ package route
 
 import (
 	"card-game-golang/controller"
+	"card-game-golang/validations"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
 
+var (
+	auth      = controller.Auth{}
+	player    = controller.Player{}
+	game      = controller.Game{}
+	playerVal = validations.Player{}
+)
+
 // common ...
 func common(e *echo.Echo) {
-	auth := controller.Auth{}
-	player := controller.Player{}
-	game := controller.Game{}
-
 	common := e.Group("/api")
 
-	common.POST("/register", auth.PlayerRegister)
+	common.POST("/register", auth.PlayerRegister, playerVal.Register)
 	common.POST("/login", auth.PlayerLogin)
 
 	// middleware

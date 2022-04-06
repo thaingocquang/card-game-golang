@@ -1,7 +1,6 @@
 package config
 
 import (
-	"fmt"
 	"github.com/joho/godotenv"
 	"log"
 	"os"
@@ -20,8 +19,6 @@ func InitDotEnv() {
 	if err := godotenv.Load(GetEnvPath()); err != nil {
 		log.Fatal("Error loading .env file")
 	}
-
-	fmt.Println("abcxyz")
 
 	// database ...
 	database := Database{Uri: GetEnvString("DB_URI"), Name: GetEnvString("DB_Name"), TestName: GetEnvString("DB_Name_Test")}
@@ -43,9 +40,6 @@ func InitDotEnv() {
 // GetEnvPath ...
 func GetEnvPath() string {
 	projectName := regexp.MustCompile(`^(.*` + projectDirName + `)`)
-
-	fmt.Println("hello", projectName)
-
 	curWorkDir, _ := os.Getwd()
 	rootPath := projectName.Find([]byte(curWorkDir))
 	return string(rootPath) + `/.env`
