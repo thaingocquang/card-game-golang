@@ -3,6 +3,7 @@ package dao
 import (
 	"card-game-golang/dto"
 	"card-game-golang/model"
+	"card-game-golang/module/database"
 	"context"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -13,7 +14,10 @@ type Bot struct{}
 
 // FindByID ...
 func (p Bot) FindByID(ID primitive.ObjectID) (model.Bot, error) {
-	var bot model.Bot
+	var (
+		botCol = database.BotCol()
+		bot    model.Bot
+	)
 
 	// filter
 	filter := bson.M{"_id": ID}
@@ -28,6 +32,8 @@ func (p Bot) FindByID(ID primitive.ObjectID) (model.Bot, error) {
 
 // Create ...
 func (p Bot) Create(bot dto.Bot) error {
+	var botCol = database.BotCol()
+
 	// InsertOne
 	if _, err := botCol.InsertOne(context.Background(), bot); err != nil {
 		return err
@@ -38,6 +44,8 @@ func (p Bot) Create(bot dto.Bot) error {
 
 // Update ...
 func (p Bot) Update(ID primitive.ObjectID, bot dto.Bot) error {
+	var botCol = database.BotCol()
+
 	update := model.Bot{
 		Name:         bot.Name,
 		TotalPoints:  bot.TotalPoints,
@@ -56,6 +64,8 @@ func (p Bot) Update(ID primitive.ObjectID, bot dto.Bot) error {
 
 // Delete ...
 func (p Bot) Delete(ID primitive.ObjectID) error {
+	var botCol = database.BotCol()
+
 	// filter
 	filter := bson.M{"_id": ID}
 
@@ -69,7 +79,10 @@ func (p Bot) Delete(ID primitive.ObjectID) error {
 
 // GetList ...
 func (p Bot) GetList(page, limit int) ([]model.Bot, error) {
-	var bots []model.Bot
+	var (
+		botCol = database.BotCol()
+		bots   []model.Bot
+	)
 
 	// options
 	opts := new(options.FindOptions)
