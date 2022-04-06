@@ -1,6 +1,9 @@
 package database
 
-import "go.mongodb.org/mongo-driver/mongo"
+import (
+	"go.mongodb.org/mongo-driver/mongo"
+	"log"
+)
 
 const (
 	players = "players"
@@ -12,6 +15,7 @@ const (
 
 // PlayerCol ...
 func PlayerCol() *mongo.Collection {
+	log.Printf("db", db)
 	return db.Collection(players)
 }
 

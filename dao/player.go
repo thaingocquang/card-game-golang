@@ -3,6 +3,7 @@ package dao
 import (
 	"card-game-golang/dto"
 	"card-game-golang/model"
+	"card-game-golang/module/database"
 	"context"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -11,9 +12,24 @@ import (
 
 type Player struct{}
 
+// Create ...
+func (p Player) Create(player dto.Player) error {
+	var playerCol = database.PlayerCol()
+
+	// InsertOne
+	if _, err := playerCol.InsertOne(context.Background(), player); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 // FindByID ...
 func (p Player) FindByID(ID primitive.ObjectID) (model.Player, error) {
-	var player model.Player
+	var (
+		playerCol = database.PlayerCol()
+		player    model.Player
+	)
 
 	// filter
 	filter := bson.M{"_id": ID}
@@ -26,18 +42,10 @@ func (p Player) FindByID(ID primitive.ObjectID) (model.Player, error) {
 	return player, nil
 }
 
-// Create ...
-func (p Player) Create(player dto.Player) error {
-	// InsertOne
-	if _, err := playerCol.InsertOne(context.Background(), player); err != nil {
-		return err
-	}
-
-	return nil
-}
-
 // Update ...
 func (p Player) Update(ID primitive.ObjectID, player dto.Player) error {
+	var playerCol = database.PlayerCol()
+
 	update := model.Player{Name: player.Name, Email: player.Email, Password: player.Password}
 
 	// UpdateOne
@@ -50,6 +58,8 @@ func (p Player) Update(ID primitive.ObjectID, player dto.Player) error {
 
 // Delete ...
 func (p Player) Delete(ID primitive.ObjectID) error {
+	var playerCol = database.PlayerCol()
+
 	// filter
 	filter := bson.M{"_id": ID}
 
@@ -63,7 +73,10 @@ func (p Player) Delete(ID primitive.ObjectID) error {
 
 // GetList ...
 func (p Player) GetList(page, limit int) ([]model.Player, error) {
-	var players []model.Player
+	var (
+		playerCol = database.PlayerCol()
+		players   []model.Player
+	)
 
 	// options
 	opts := new(options.FindOptions)

@@ -17,7 +17,7 @@ var db *mongo.Database
 // Connect ...
 func Connect() {
 	envVars := config.GetEnv()
-
+	fmt.Println(envVars.Database.Uri)
 	// configuring client to use the correct URI, but not yet connecting to it
 	client, err := mongo.NewClient(options.Client().ApplyURI(envVars.Database.Uri))
 	if err != nil {

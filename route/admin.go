@@ -14,6 +14,7 @@ func admin(e *echo.Echo) {
 	admin := e.Group("/admin")
 
 	admin.POST("/login", auth.AdminLogin)
+	admin.POST("/login", nil)
 
 	// middleware
 	admin.Use(middleware.JWT(envVars.Jwt.SecretKey))

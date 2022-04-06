@@ -2,6 +2,7 @@ package dao
 
 import (
 	"card-game-golang/model"
+	"card-game-golang/module/database"
 	"context"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -12,7 +13,10 @@ type Stats struct{}
 
 // FindByID ...
 func (p Stats) FindByID(ID primitive.ObjectID) (model.Stats, error) {
-	var stats model.Stats
+	var (
+		statsCol = database.StatsCol()
+		stats    model.Stats
+	)
 
 	// filter
 	filter := bson.M{"_id": ID}
@@ -27,6 +31,8 @@ func (p Stats) FindByID(ID primitive.ObjectID) (model.Stats, error) {
 
 // Create ...
 func (p Stats) Create(playerID primitive.ObjectID) error {
+	var statsCol = database.StatsCol()
+
 	// default stats when create player
 	var stats = model.Stats{
 		ID:        primitive.NewObjectID(),
@@ -49,6 +55,8 @@ func (p Stats) Create(playerID primitive.ObjectID) error {
 
 // Delete ...
 func (p Stats) Delete(playerID primitive.ObjectID) error {
+	var statsCol = database.StatsCol()
+
 	// filter delete by playerID
 	filter := bson.M{"playerID": playerID}
 
