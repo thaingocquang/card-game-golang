@@ -1,7 +1,11 @@
 package dao
 
-import "card-game-golang/module/database"
+import (
+	"card-game-golang/dto"
+	"card-game-golang/module/database"
+)
 
+// collections
 var (
 	playerCol = database.PlayerCol()
 	adminCol  = database.AdminCol()
@@ -9,3 +13,7 @@ var (
 	gameCol   = database.GameCol()
 	statsCol  = database.StatsCol()
 )
+
+type Service interface {
+	Create(player dto.Player) error
+}
