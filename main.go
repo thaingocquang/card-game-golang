@@ -13,16 +13,17 @@ func init() {
 	database.Connect()
 }
 
+// main ...
 func main() {
-	// envVars ...
+	//envVars ...
 	envVars := config.GetEnv()
 
-	// echo ...
+	//echo ...
 	e := echo.New()
 
-	// route
+	//route
 	route.Route(e)
 
-	// start server
+	//start server
 	e.Logger.Fatal(e.Start(envVars.AppPort))
 }

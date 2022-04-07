@@ -6,14 +6,16 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 )
 
+var (
+	bot = controller.Bot{}
+)
+
 // admin ...
 func admin(e *echo.Echo) {
-	auth := controller.Auth{}
-	bot := controller.Bot{}
-
 	admin := e.Group("/admin")
 
 	admin.POST("/login", auth.AdminLogin)
+	admin.POST("/login", nil)
 
 	// middleware
 	admin.Use(middleware.JWT(envVars.Jwt.SecretKey))

@@ -15,7 +15,6 @@ const projectDirName = "card-game-golang"
 
 // InitDotEnv ...
 func InitDotEnv() {
-
 	// load env
 	if err := godotenv.Load(GetEnvPath()); err != nil {
 		log.Fatal("Error loading .env file")
