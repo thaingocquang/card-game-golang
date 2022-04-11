@@ -10,8 +10,10 @@ import (
 	"time"
 )
 
+// Player ...
 type Player struct{}
 
+// Register ...
 func (p Player) Register(player dto.Player) error {
 	// check email existed
 	isEmailExisted, err := playerDao.IsEmailExisted(player.Email)
@@ -30,9 +32,11 @@ func (p Player) Register(player dto.Player) error {
 		return err
 	}
 
+	objID := primitive.NewObjectID()
+
 	// player bson
 	playerBSON := model.Player{
-		ID:        primitive.NewObjectID(),
+		ID:        objID,
 		Name:      player.Name,
 		Email:     player.Email,
 		Password:  string(bytes),
@@ -45,9 +49,15 @@ func (p Player) Register(player dto.Player) error {
 		return err
 	}
 
+	// dao create statistics
+	if err := statsDao.Create(objID); err != nil {
+		return err
+	}
+
 	return nil
 }
 
+// Login ...
 func (p Player) Login(player dto.PlayerLogin) (string, error) {
 	// find player by email
 	playerBSON, err := playerDao.FindByEmail(player.Email)
@@ -73,4 +83,36 @@ func (p Player) Login(player dto.PlayerLogin) (string, error) {
 
 	// return JWT token
 	return token, err
+}
+
+// MyProfile ...
+func (p Player) MyProfile(id string) (map[string]interface{}, error) {
+	// get objectID from string
+	objID, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return nil, err
+	}
+
+	// get player
+	player, err := playerDao.FindByID(objID)
+	if err != nil {
+		return nil, err
+	}
+
+	// get statistics
+	stats, err := statsDao.FindByPlayerID(objID)
+	if err != nil {
+		return nil, err
+	}
+
+	profile := map[string]interface{}{
+		"name":      player.Name,
+		"email":     player.Email,
+		"point":     stats.Point,
+		"totalGame": stats.TotalGame,
+		"winGame":   stats.WinGame,
+		"winRate":   stats.WinRate,
+	}
+
+	return profile, nil
 }

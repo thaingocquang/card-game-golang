@@ -22,9 +22,9 @@ func common(e *echo.Echo) {
 	common.POST("/login", auth.PlayerLogin, playerVal.Login)
 
 	// middleware
-	common.Use(middleware.JWT(envVars.Jwt.SecretKey))
+	common.Use(middleware.JWT([]byte(envVars.Jwt.SecretKey)))
 
-	common.GET("/me", player.MyProfile)
+	common.GET("/me", player.MyProfile, playerVal.ValidateID)
 	common.PUT("/me", player.UpdateMyProfile)
 	common.PATCH("/me/password", player.UpdateMyPassword)
 

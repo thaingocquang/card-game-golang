@@ -11,6 +11,11 @@ import (
 	"time"
 )
 
+var (
+	PlayerIDString = "5f24d45125ea51bc57a8285a"
+	PlayerObjID, _ = primitive.ObjectIDFromHex(PlayerIDString)
+)
+
 // ClearDB ...
 func ClearDB() {
 	database.PlayerCol().DeleteMany(context.Background(), bson.M{})
@@ -20,21 +25,44 @@ func ClearDB() {
 func CreateFakePlayer() {
 	var (
 		playerDao = dao.Player{}
-		bytes, _  = bcrypt.GenerateFromPassword([]byte("123456"), 14)
+		statsDao  = dao.Stats{}
 
-		// fakePlayer
-		fakePlayer = model.Player{
-			ID:        primitive.NewObjectID(),
+		// player bson
+		playerBSON = model.Player{
+			ID:        PlayerObjID,
 			Name:      "fake",
 			Email:     "fake@gmail.com",
-			Password:  string(bytes),
+			Password:  "123456",
 			CreatedAt: time.Now(),
 			UpdatedAt: time.Now(),
 		}
 	)
-
-	err := playerDao.Create(fakePlayer)
+	// check email existed
+	isEmailExisted, err := playerDao.IsEmailExisted(playerBSON.Email)
 	if err != nil {
+		panic(err)
+	}
+
+	// email existed
+	if isEmailExisted == true {
+		panic(err)
+	}
+
+	// hash player password
+	bytes, err := bcrypt.GenerateFromPassword([]byte(playerBSON.Password), 14)
+	if err != nil {
+		panic(err)
+	}
+
+	playerBSON.Password = string(bytes)
+
+	// call dao create player
+	if err := playerDao.Create(playerBSON); err != nil {
+		panic(err)
+	}
+
+	// dao create statistics
+	if err := statsDao.Create(PlayerObjID); err != nil {
 		panic(err)
 	}
 }

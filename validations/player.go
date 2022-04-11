@@ -56,3 +56,26 @@ func (p Player) Login(next echo.HandlerFunc) echo.HandlerFunc {
 		return next(c)
 	}
 }
+
+// ValidateID ...
+func (p Player) ValidateID(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		// GetJWTPayload
+		jwtPayload, err := util.GetJWTPayload(c)
+		if err != nil {
+			return util.Response400(c, nil, err.Error())
+		}
+
+		// player id string
+		id := jwtPayload["id"].(string)
+
+		// ValidateObjectID
+		if err := util.ValidateObjectID(id); err != nil {
+			return util.Response400(c, nil, err.Error())
+		}
+
+		c.Set("id", id)
+
+		return next(c)
+	}
+}

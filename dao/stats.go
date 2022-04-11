@@ -29,6 +29,24 @@ func (p Stats) FindByID(ID primitive.ObjectID) (model.Stats, error) {
 	return stats, nil
 }
 
+// FindByPlayerID ...
+func (p Stats) FindByPlayerID(ID primitive.ObjectID) (model.Stats, error) {
+	var (
+		statsCol = database.StatsCol()
+		stats    model.Stats
+	)
+
+	// filter
+	filter := bson.M{"playerID": ID}
+
+	// FindOne
+	if err := statsCol.FindOne(context.Background(), filter).Decode(&stats); err != nil {
+		return model.Stats{}, err
+	}
+
+	return stats, nil
+}
+
 // Create ...
 func (p Stats) Create(playerID primitive.ObjectID) error {
 	var statsCol = database.StatsCol()
