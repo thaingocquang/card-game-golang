@@ -296,8 +296,48 @@ func (suite *LoginSuite) TestLogin_Fail_WrongPassword() {
 	assert.Equal(suite.T(), "wrong password", response["message"])
 }
 
+// ===========================================
+
+// LoginSuite ...
+type AdminLoginSuite struct {
+	suite.Suite
+	e *echo.Echo
+}
+
+// SetupSuite ...
+func (suite *AdminLoginSuite) SetupSuite() {
+	suite.e = testhelper.InitServer()
+	testhelper.CreateFakePlayer()
+}
+
+// TestAdminLogin_Success ...
+func (suite *LoginSuite) TestAdminLogin_Success() {
+	var (
+		body = dto.Admin{
+			Username: "admin",
+			Password: "123456",
+		}
+		response util.Response
+	)
+
+	bodyJSON, _ := json.Marshal(body)
+
+	// request
+	req, _ := http.NewRequest(http.MethodPost, "/admin/login", bytes.NewReader(bodyJSON))
+	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+
+	// run
+	rec := testhelper.RunAndAssertHTTPOk(suite.e, req, suite.T())
+
+	// assert
+	_ = json.Unmarshal(rec.Body.Bytes(), &response)
+	assert.NotEqual(suite.T(), nil, response["data"])
+	assert.Equal(suite.T(), "success", response["message"])
+}
+
 // TestAuth ...
 func TestAuth(t *testing.T) {
 	suite.Run(t, new(RegisterSuite))
 	suite.Run(t, new(LoginSuite))
+	suite.Run(t, new(AdminLoginSuite))
 }

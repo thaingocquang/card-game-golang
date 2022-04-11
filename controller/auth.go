@@ -14,7 +14,7 @@ func (a Auth) PlayerRegister(c echo.Context) error {
 	var player = c.Get("body").(dto.Player)
 
 	// process data
-	if err := playerService.Register(player); err != nil {
+	if err := authService.Register(player); err != nil {
 		return util.Response400(c, nil, err.Error())
 	}
 
@@ -27,7 +27,7 @@ func (a Auth) PlayerLogin(c echo.Context) error {
 	var player = c.Get("body").(dto.PlayerLogin)
 
 	// process data
-	token, err := playerService.Login(player)
+	token, err := authService.Login(player)
 	if err != nil {
 		return util.Response400(c, nil, err.Error())
 	}
@@ -43,5 +43,20 @@ func (a Auth) PlayerLogin(c echo.Context) error {
 
 // AdminLogin ...
 func (a Auth) AdminLogin(c echo.Context) error {
-	return nil
+	var admin = c.Get("body").(dto.Admin)
+
+	// process data
+	token, err := authService.AdminLogin(admin)
+
+	// if error
+	if err != nil {
+		return util.Response400(c, nil, err.Error())
+	}
+
+	// token
+	data := map[string]interface{}{
+		"token": token,
+	}
+
+	return util.Response200(c, data, "")
 }
