@@ -1,6 +1,9 @@
 package controller_test
 
 import (
+	"bytes"
+	"card-game-golang/dao"
+	"card-game-golang/model"
 	testhelper "card-game-golang/test_helper"
 	"card-game-golang/util"
 	"encoding/json"
@@ -92,7 +95,67 @@ func (suite *MyProfileSuite) TestGetMyProfile_Fail_MissingJWT() {
 	assert.Equal(suite.T(), "missing or malformed jwt", response["message"])
 }
 
+// =============================================================
+
+// UpdateMyProfile ...
+type UpdateMyProfile struct {
+	suite.Suite
+	e *echo.Echo
+}
+
+// SetupSuite ...
+func (suite *UpdateMyProfile) SetupSuite() {
+	suite.e = testhelper.InitServer()
+	testhelper.CreateFakePlayer()
+}
+
+// TestUpdateMyProfile_Success ...
+func (suite *UpdateMyProfile) TestUpdateMyProfile_Success() {
+	var (
+		token    string
+		response util.Response
+
+		playerDao = dao.Player{}
+
+		// body update only player name
+		body = model.Player{
+			Name: "update name",
+		}
+	)
+
+	data := map[string]interface{}{
+		"id": testhelper.PlayerObjID,
+	}
+
+	token, err := util.GenerateUserToken(data)
+	if err != nil {
+		panic(err)
+	}
+
+	bodyMarshal, _ := json.Marshal(body)
+
+	// request
+	req := httptest.NewRequest(http.MethodPut, "/api/me", bytes.NewReader(bodyMarshal))
+	req.Header.Set("Authorization", "Bearer "+token)
+	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+
+	// run
+	rec := testhelper.RunAndAssertHTTPOk(suite.e, req, suite.T())
+
+	updatedPlayer, err := playerDao.FindByID(testhelper.PlayerObjID)
+	if err != nil {
+		panic(err)
+	}
+
+	// parse
+	json.Unmarshal(rec.Body.Bytes(), &response)
+	assert.Equal(suite.T(), testhelper.PlayerIDString, response["data"])
+	assert.Equal(suite.T(), "success", response["message"])
+	assert.Equal(suite.T(), body.Name, updatedPlayer.Name)
+}
+
 // TestPlayer ...
 func TestPlayer(t *testing.T) {
 	suite.Run(t, new(MyProfileSuite))
+	suite.Run(t, new(UpdateMyProfile))
 }

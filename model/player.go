@@ -8,11 +8,11 @@ import (
 type (
 	// Player ...
 	Player struct {
-		ID        primitive.ObjectID `bson:"_id"`
-		Name      string             `bson:"name"`
-		Email     string             `bson:"email"`
-		Password  string             `bson:"password"`
-		CreatedAt time.Time          `bson:"createdAt"`
-		UpdatedAt time.Time          `bson:"updatedAt"`
+		ID        primitive.ObjectID `bson:"_id,omitempty"`
+		Name      string             `bson:"name,omitempty"`
+		Email     string             `bson:"email,omitempty"`
+		Password  string             `bson:"password,omitempty"`
+		CreatedAt time.Time          `bson:"createdAt,omitempty"`
+		UpdatedAt time.Time          `bson:"updatedAt,omitempty"`
 	}
 )

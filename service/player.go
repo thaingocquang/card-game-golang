@@ -116,3 +116,19 @@ func (p Player) MyProfile(id string) (map[string]interface{}, error) {
 
 	return profile, nil
 }
+
+// UpdateProfile ...
+func (p Player) UpdateProfile(ID string, update dto.PlayerUpdate) error {
+	// get objectID from string
+	objID, err := primitive.ObjectIDFromHex(ID)
+	if err != nil {
+		return err
+	}
+
+	// UpdateProfile
+	if err := playerDao.UpdateProfile(objID, update); err != nil {
+		return err
+	}
+
+	return nil
+}

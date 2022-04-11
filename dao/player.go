@@ -74,6 +74,20 @@ func (p Player) Update(ID primitive.ObjectID, player dto.Player) error {
 	return nil
 }
 
+// UpdateProfile ...
+func (p Player) UpdateProfile(ID primitive.ObjectID, player dto.PlayerUpdate) error {
+	var playerCol = database.PlayerCol()
+
+	update := model.Player{Name: player.Name, Email: player.Email}
+
+	// UpdateOne
+	if _, err := playerCol.UpdateOne(context.Background(), bson.M{"_id": ID}, bson.M{"$set": update}); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 // Delete ...
 func (p Player) Delete(ID primitive.ObjectID) error {
 	var playerCol = database.PlayerCol()

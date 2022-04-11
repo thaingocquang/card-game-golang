@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"card-game-golang/dto"
 	"card-game-golang/util"
 	"github.com/labstack/echo/v4"
 )
@@ -22,19 +23,21 @@ func (p Player) MyProfile(c echo.Context) error {
 	return util.Response200(c, profile, "")
 }
 
-// Register ...
-func (p Player) Register(c echo.Context) error {
-	return nil
-}
-
-// Login ...
-func (p Player) Login(c echo.Context) error {
-	return nil
-}
-
 // UpdateMyProfile ...
 func (p Player) UpdateMyProfile(c echo.Context) error {
-	return nil
+	// player id & update body
+	var id = c.Get("id").(string)
+	var body = c.Get("body").(dto.PlayerUpdate)
+
+	// process
+	err := playerService.UpdateProfile(id, body)
+
+	// if err
+	if err != nil {
+		return util.Response400(c, nil, err.Error())
+	}
+
+	return util.Response200(c, id, "")
 }
 
 // UpdateMyPassword ...
