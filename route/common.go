@@ -19,7 +19,7 @@ func common(e *echo.Echo) {
 	common := e.Group("/api")
 
 	common.POST("/register", auth.PlayerRegister, playerVal.Register)
-	common.POST("/login", auth.PlayerLogin)
+	common.POST("/login", auth.PlayerLogin, playerVal.Login)
 
 	// middleware
 	common.Use(middleware.JWT(envVars.Jwt.SecretKey))

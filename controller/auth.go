@@ -24,7 +24,21 @@ func (a Auth) PlayerRegister(c echo.Context) error {
 
 // PlayerLogin ...
 func (a Auth) PlayerLogin(c echo.Context) error {
-	return nil
+	var player = c.Get("body").(dto.PlayerLogin)
+
+	// process data
+	token, err := playerService.Login(player)
+	if err != nil {
+		return util.Response400(c, nil, err.Error())
+	}
+
+	// token
+	data := map[string]interface{}{
+		"token": token,
+	}
+
+	// success
+	return util.Response200(c, data, "")
 }
 
 // AdminLogin ...
