@@ -2,6 +2,7 @@ package controller_test
 
 import (
 	"bytes"
+	"card-game-golang/dto"
 	"card-game-golang/model"
 	testhelper "card-game-golang/test_helper"
 	"card-game-golang/util"
@@ -207,7 +208,96 @@ func (suite *RegisterSuite) TestRegister_Fail_EmailInValid_InvalidDomain() {
 	assert.Equal(suite.T(), "email: must be a valid email address.", response["message"])
 }
 
+// ===========================================
+
+// LoginSuite ...
+type LoginSuite struct {
+	suite.Suite
+	e *echo.Echo
+}
+
+// SetupSuite ...
+func (suite *LoginSuite) SetupSuite() {
+	suite.e = testhelper.InitServer()
+	testhelper.CreateFakePlayer()
+}
+
+// TestLogin_Success ...
+func (suite *LoginSuite) TestLogin_Success() {
+	var (
+		body = dto.PlayerLogin{
+			Email:    "fake@gmail.com",
+			Password: "123456",
+		}
+		response util.Response
+	)
+
+	bodyJSON, _ := json.Marshal(body)
+
+	// request
+	req, _ := http.NewRequest(http.MethodPost, "/api/login", bytes.NewReader(bodyJSON))
+	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+
+	// run
+	rec := testhelper.RunAndAssertHTTPOk(suite.e, req, suite.T())
+
+	// assert
+	_ = json.Unmarshal(rec.Body.Bytes(), &response)
+	assert.NotEqual(suite.T(), nil, response["data"])
+}
+
+// TestLogin_Fail_EmailNotExistInDB ...
+func (suite *LoginSuite) TestLogin_Fail_EmailNotExistInDB() {
+	var (
+		body = dto.PlayerLogin{
+			Email:    "adsdasd@gmail.com",
+			Password: "123456",
+		}
+		response util.Response
+	)
+
+	bodyJSON, _ := json.Marshal(body)
+
+	// request
+	req, _ := http.NewRequest(http.MethodPost, "/api/login", bytes.NewReader(bodyJSON))
+	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+
+	// run
+	rec := testhelper.RunAndAssertHTTPBadRequest(suite.e, req, suite.T())
+
+	// assert
+	_ = json.Unmarshal(rec.Body.Bytes(), &response)
+	assert.Equal(suite.T(), nil, response["data"])
+	assert.Equal(suite.T(), "email not existed in db", response["message"])
+}
+
+// TestLogin_Fail_WrongPassword ...
+func (suite *LoginSuite) TestLogin_Fail_WrongPassword() {
+	var (
+		body = dto.PlayerLogin{
+			Email:    "fake@gmail.com",
+			Password: "asdasdaa",
+		}
+		response util.Response
+	)
+
+	bodyJSON, _ := json.Marshal(body)
+
+	// request
+	req, _ := http.NewRequest(http.MethodPost, "/api/login", bytes.NewReader(bodyJSON))
+	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+
+	// run
+	rec := testhelper.RunAndAssertHTTPBadRequest(suite.e, req, suite.T())
+
+	// assert
+	_ = json.Unmarshal(rec.Body.Bytes(), &response)
+	assert.Equal(suite.T(), nil, response["data"])
+	assert.Equal(suite.T(), "wrong password", response["message"])
+}
+
 // TestAuth ...
 func TestAuth(t *testing.T) {
 	suite.Run(t, new(RegisterSuite))
+	suite.Run(t, new(LoginSuite))
 }

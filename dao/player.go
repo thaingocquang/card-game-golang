@@ -42,6 +42,24 @@ func (p Player) FindByID(ID primitive.ObjectID) (model.Player, error) {
 	return player, nil
 }
 
+// FindByEmail ...
+func (p Player) FindByEmail(email string) (model.Player, error) {
+	var (
+		playerCol = database.PlayerCol()
+		player    model.Player
+	)
+
+	// filter
+	filter := bson.M{"email": email}
+
+	// FindOne
+	if err := playerCol.FindOne(context.Background(), filter).Decode(&player); err != nil {
+		return model.Player{}, err
+	}
+
+	return player, nil
+}
+
 // Update ...
 func (p Player) Update(ID primitive.ObjectID, player dto.Player) error {
 	var playerCol = database.PlayerCol()

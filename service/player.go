@@ -3,6 +3,7 @@ package service
 import (
 	"card-game-golang/dto"
 	"card-game-golang/model"
+	"card-game-golang/util"
 	"errors"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"golang.org/x/crypto/bcrypt"
@@ -45,4 +46,31 @@ func (p Player) Register(player dto.Player) error {
 	}
 
 	return nil
+}
+
+func (p Player) Login(player dto.PlayerLogin) (string, error) {
+	// find player by email
+	playerBSON, err := playerDao.FindByEmail(player.Email)
+	if err != nil {
+		return "", errors.New("email not existed in db")
+	}
+
+	// verify player password
+	if err := bcrypt.CompareHashAndPassword([]byte(playerBSON.Password), []byte(player.Password)); err != nil {
+		return "", errors.New("wrong password")
+	}
+
+	// jwt payload
+	data := map[string]interface{}{
+		"id": playerBSON.ID,
+	}
+
+	// GenerateUserToken ...
+	token, err := util.GenerateUserToken(data)
+	if err != nil {
+		return "", errors.New("generate token failed")
+	}
+
+	// return JWT token
+	return token, err
 }
