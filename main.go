@@ -2,6 +2,7 @@ package main
 
 import (
 	"card-game-golang/config"
+	"card-game-golang/dao"
 	"card-game-golang/module/database"
 	"card-game-golang/route"
 	"github.com/labstack/echo/v4"
@@ -11,6 +12,7 @@ import (
 func init() {
 	config.Init()
 	database.Connect()
+	dao.Admin{}.Create()
 }
 
 // main ...

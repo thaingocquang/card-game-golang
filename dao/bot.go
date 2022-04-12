@@ -81,7 +81,7 @@ func (p Bot) Delete(ID primitive.ObjectID) error {
 func (p Bot) GetList(page, limit int) ([]model.Bot, error) {
 	var (
 		botCol = database.BotCol()
-		bots   []model.Bot
+		bots   = make([]model.Bot, 0)
 	)
 
 	// options
@@ -97,7 +97,7 @@ func (p Bot) GetList(page, limit int) ([]model.Bot, error) {
 
 	cursor, err := botCol.Find(context.Background(), bson.D{}, opts)
 	if err != nil {
-		return nil, err
+		return bots, err
 	}
 
 	if err = cursor.All(context.Background(), &bots); err != nil {

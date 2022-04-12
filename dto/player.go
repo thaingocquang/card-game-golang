@@ -24,6 +24,16 @@ type (
 		Name  string `json:"name,omitempty"`
 		Email string `json:"email,omitempty"`
 	}
+
+	// Profile ...
+	Profile struct {
+		Name      string  `json:"name"`
+		Email     string  `json:"email"`
+		Point     int     `json:"point"`
+		TotalGame int     `json:"totalGame"`
+		WinGame   int     `json:"winGame"`
+		WinRate   float32 `json:"winRate"`
+	}
 )
 
 // Validate ...

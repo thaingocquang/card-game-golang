@@ -2,20 +2,21 @@ package route
 
 import (
 	"card-game-golang/controller"
+	"card-game-golang/validations"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
 
 var (
-	bot = controller.Bot{}
+	bot      = controller.Bot{}
+	adminVal = validations.Admin{}
 )
 
 // admin ...
 func admin(e *echo.Echo) {
 	admin := e.Group("/admin")
 
-	admin.POST("/login", auth.AdminLogin)
-	admin.POST("/login", nil)
+	admin.POST("/login", auth.AdminLogin, adminVal.Login)
 
 	// middleware
 	admin.Use(middleware.JWT(envVars.Jwt.SecretKey))
