@@ -36,7 +36,7 @@ func (p Player) FindByID(ID primitive.ObjectID) (model.Player, error) {
 
 	// FindOne
 	if err := playerCol.FindOne(context.Background(), filter).Decode(&player); err != nil {
-		return model.Player{}, err
+		return player, err
 	}
 
 	return player, nil
