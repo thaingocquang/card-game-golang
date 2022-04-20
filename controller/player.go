@@ -24,14 +24,14 @@ func (p Player) MyProfile(c echo.Context) error {
 	return util.Response200(c, profile, "")
 }
 
-// UpdateMyProfile ...
-func (p Player) UpdateMyProfile(c echo.Context) error {
+// UpdatePlayer ...
+func (p Player) UpdatePlayer(c echo.Context) error {
 	// player id & update body
 	var id = c.Get("id").(string)
 	var body = c.Get("body").(dto.PlayerUpdate)
 
 	// process
-	err := playerService.UpdateProfile(id, body)
+	err := playerService.Update(id, body)
 
 	// if err
 	if err != nil {
@@ -74,11 +74,11 @@ func (p Player) GetList(c echo.Context) error {
 	return util.Response200(c, profiles, "")
 }
 
-//
-func (p Player) UpdateByID(c echo.Context) error {
+// UpdateProfileByID ...
+func (p Player) UpdateProfileByID(c echo.Context) error {
 	// player id & update body
 	var id = c.Get("id").(string)
-	var body = c.Get("body").(dto.PlayerUpdate)
+	var body = c.Get("body").(dto.ProfileUpdate)
 
 	// process
 	err := playerService.UpdateProfile(id, body)

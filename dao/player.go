@@ -1,7 +1,6 @@
 package dao
 
 import (
-	"card-game-golang/dto"
 	"card-game-golang/model"
 	"card-game-golang/module/database"
 	"context"
@@ -62,27 +61,11 @@ func (p Player) FindByEmail(email string) (model.Player, error) {
 }
 
 // Update ...
-func (p Player) Update(ID primitive.ObjectID, player dto.Player) error {
+func (p Player) Update(ID primitive.ObjectID, player model.Player) error {
 	var playerCol = database.PlayerCol()
 
-	update := model.Player{Name: player.Name, Email: player.Email, Password: player.Password}
-
 	// UpdateOne
-	if _, err := playerCol.UpdateOne(context.Background(), bson.M{"_id": ID}, bson.M{"$set": update}); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// UpdateProfile ...
-func (p Player) UpdateProfile(ID primitive.ObjectID, player dto.PlayerUpdate) error {
-	var playerCol = database.PlayerCol()
-
-	update := model.Player{Name: player.Name, Email: player.Email}
-
-	// UpdateOne
-	if _, err := playerCol.UpdateOne(context.Background(), bson.M{"_id": ID}, bson.M{"$set": update}); err != nil {
+	if _, err := playerCol.UpdateOne(context.Background(), bson.M{"_id": ID}, bson.M{"$set": player}); err != nil {
 		return err
 	}
 

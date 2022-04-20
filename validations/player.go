@@ -81,8 +81,8 @@ func (p Player) Update(next echo.HandlerFunc) echo.HandlerFunc {
 	}
 }
 
-// MyProfile ...
-func (p Player) MyProfile(next echo.HandlerFunc) echo.HandlerFunc {
+// IDInToken ...
+func (p Player) IDInToken(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		// GetJWTPayload
 		jwtPayload, err := util.GetJWTPayload(c)
@@ -99,6 +99,30 @@ func (p Player) MyProfile(next echo.HandlerFunc) echo.HandlerFunc {
 		}
 
 		c.Set("id", id)
+
+		return next(c)
+	}
+}
+
+// Profile ...
+func (p Player) Profile(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		// profile update body
+		var body dto.ProfileUpdate
+
+		// bind request data
+		if err := c.Bind(&body); err != nil {
+			if err != nil {
+				return util.Response400(c, nil, err.Error())
+			}
+		}
+
+		// validate
+		if err := body.Validate(); err != nil {
+			return util.Response400(c, nil, err.Error())
+		}
+
+		c.Set("body", body)
 
 		return next(c)
 	}

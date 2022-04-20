@@ -22,8 +22,9 @@ type (
 
 	// PlayerUpdate ...
 	PlayerUpdate struct {
-		Name  string `json:"name,omitempty"`
-		Email string `json:"email,omitempty"`
+		Name     string `json:"name,omitempty"`
+		Email    string `json:"email,omitempty"`
+		Password string `json:"password,omitempty"`
 	}
 
 	// Profile ...
@@ -35,6 +36,13 @@ type (
 		TotalGame int                `json:"totalGame"`
 		WinGame   int                `json:"winGame"`
 		WinRate   float32            `json:"winRate"`
+	}
+
+	ProfileUpdate struct {
+		Name     string `json:"name"`
+		Email    string `json:"email"`
+		Password string `json:"password"`
+		Point    int    `json:"point"`
 	}
 )
 
@@ -60,5 +68,17 @@ func (p PlayerUpdate) Validate() error {
 	return validation.ValidateStruct(&p,
 		validation.Field(&p.Name, validation.Length(3, 256)),
 		validation.Field(&p.Email, is.Email, validation.Length(8, 256)),
+	)
+}
+
+// Validate ...
+func (pu ProfileUpdate) Validate() error {
+	return validation.ValidateStruct(&pu,
+		validation.Field(&pu.Name, validation.Length(3, 256)),
+		validation.Field(&pu.Email, is.Email, validation.Length(8, 256)),
+		validation.Field(&pu.Password, validation.Length(8, 256)),
+		validation.Field(&pu.Point,
+			validation.Min(0),
+			validation.Max(10000)),
 	)
 }

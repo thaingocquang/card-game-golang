@@ -4,6 +4,7 @@ import (
 	"card-game-golang/model"
 	"card-game-golang/module/database"
 	"context"
+	"fmt"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -133,7 +134,7 @@ func (s Stats) GetList(page, limit int) ([]model.Stats, error) {
 func (s Stats) UpdateByID(id primitive.ObjectID, stats model.Stats) error {
 	var statsCol = database.StatsCol()
 
-	// DeleteMany
+	// UpdateOne
 	if _, err := statsCol.UpdateOne(context.Background(), bson.M{"_id": id}, bson.M{"$set": stats}); err != nil {
 		return err
 	}
@@ -142,13 +143,21 @@ func (s Stats) UpdateByID(id primitive.ObjectID, stats model.Stats) error {
 }
 
 // UpdateByPlayerID ...
-func (s Stats) UpdateByPlayerID(playerID primitive.ObjectID, stats model.Stats) error {
+func (s Stats) UpdateByPlayerID(playerID primitive.ObjectID, stats model.StatsUpdate) error {
 	var statsCol = database.StatsCol()
 
-	// DeleteMany
-	if _, err := statsCol.UpdateOne(context.Background(), bson.M{"playerID": playerID}, bson.M{"$set": stats}); err != nil {
+	//// UpdateOne
+	//if _, err := statsCol.UpdateOne(context.Background(), bson.M{"playerID": playerID}, bson.M{"$set": stats}); err != nil {
+	//	return err
+	//}
+
+	// UpdateOne
+	ur, err := statsCol.UpdateOne(context.Background(), bson.M{"playerID": playerID}, bson.M{"$set": stats})
+	if err != nil {
 		return err
 	}
+
+	fmt.Println(ur.UpsertedCount)
 
 	return nil
 }

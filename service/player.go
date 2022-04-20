@@ -2,6 +2,7 @@ package service
 
 import (
 	"card-game-golang/dto"
+	"card-game-golang/model"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -44,15 +45,50 @@ func (p Player) GetByID(id string) (dto.Profile, error) {
 }
 
 // UpdateProfile ...
-func (p Player) UpdateProfile(ID string, update dto.PlayerUpdate) error {
+func (p Player) UpdateProfile(ID string, update dto.ProfileUpdate) error {
 	// get objectID from string
 	objID, err := primitive.ObjectIDFromHex(ID)
 	if err != nil {
 		return err
 	}
 
-	// UpdateProfile
-	if err := playerDao.UpdateProfile(objID, update); err != nil {
+	// update point to stats
+	statsUpdateBSON := model.StatsUpdate{Point: update.Point}
+
+	if err := statsDao.UpdateByPlayerID(objID, statsUpdateBSON); err != nil {
+		return err
+	}
+
+	// update player to playerDao
+	playerUpdateBSON := model.Player{
+		Name:     update.Name,
+		Email:    update.Email,
+		Password: update.Password,
+	}
+	if err := playerDao.Update(objID, playerUpdateBSON); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// Update ...
+func (p Player) Update(ID string, update dto.PlayerUpdate) error {
+	// get objectID from string
+	objID, err := primitive.ObjectIDFromHex(ID)
+	if err != nil {
+		return err
+	}
+
+	// update player to playerDao
+	playerUpdateBSON := model.Player{
+		Name:     update.Name,
+		Email:    update.Email,
+		Password: update.Password,
+	}
+
+	// call dao update player
+	if err := playerDao.Update(objID, playerUpdateBSON); err != nil {
 		return err
 	}
 

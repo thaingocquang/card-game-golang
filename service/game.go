@@ -47,7 +47,7 @@ func (g Game) PlayByBotID(gameVal dto.GameVal, botID string, myID string) (model
 	}
 
 	// init BSON doc for update
-	myStatsUpdateBSON := model.Stats{}
+	myStatsUpdateBSON := model.StatsUpdate{}
 	botUpdateBSON := model.Bot{}
 
 	// increase player totalGame by 1
