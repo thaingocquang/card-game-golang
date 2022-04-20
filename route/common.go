@@ -1,33 +1,25 @@
 package route
 
 import (
-	"card-game-golang/controller"
-	"card-game-golang/validations"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-)
-
-var (
-	auth      = controller.Auth{}
-	player    = controller.Player{}
-	game      = controller.Game{}
-	playerVal = validations.Player{}
 )
 
 // common ...
 func common(e *echo.Echo) {
 	common := e.Group("/api")
 
-	common.POST("/register", auth.PlayerRegister, playerVal.Register)
-	common.POST("/login", auth.PlayerLogin, playerVal.Login)
+	common.POST("/register", authCtrl.PlayerRegister, playerVal.Register)
+	common.POST("/login", authCtrl.PlayerLogin, playerVal.Login)
 
 	// middleware
 	common.Use(middleware.JWT([]byte(envVars.Jwt.SecretKey)))
 
-	common.GET("/me", player.MyProfile, playerVal.ValidateID)
-	common.PUT("/me", player.UpdateMyProfile, playerVal.ValidateID, playerVal.Update)
-	common.PATCH("/me/password", player.UpdateMyPassword)
+	common.GET("/me", playerCtrl.MyProfile, playerVal.MyProfile)
+	common.PUT("/me", playerCtrl.UpdateMyProfile, playerVal.MyProfile, playerVal.Update)
+	common.PATCH("/me/password", playerCtrl.UpdateMyPassword)
 
-	common.POST("/api/games", game.Play)
-	common.GET("/api/games", game.RecentGame)
+	common.POST("/games/:id", gameCtrl.PlayByBotID, val.ValidateObjectID, gameVal.GameValue)
+	common.POST("/games", gameCtrl.PlayRandom)
+	common.GET("/games", gameCtrl.RecentGame)
 }

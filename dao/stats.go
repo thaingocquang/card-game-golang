@@ -6,13 +6,14 @@ import (
 	"context"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo/options"
 	"time"
 )
 
 type Stats struct{}
 
 // FindByID ...
-func (p Stats) FindByID(ID primitive.ObjectID) (model.Stats, error) {
+func (s Stats) FindByID(ID primitive.ObjectID) (model.Stats, error) {
 	var (
 		statsCol = database.StatsCol()
 		stats    model.Stats
@@ -30,7 +31,7 @@ func (p Stats) FindByID(ID primitive.ObjectID) (model.Stats, error) {
 }
 
 // FindByPlayerID ...
-func (p Stats) FindByPlayerID(ID primitive.ObjectID) (model.Stats, error) {
+func (s Stats) FindByPlayerID(ID primitive.ObjectID) (model.Stats, error) {
 	var (
 		statsCol = database.StatsCol()
 		stats    model.Stats
@@ -48,7 +49,7 @@ func (p Stats) FindByPlayerID(ID primitive.ObjectID) (model.Stats, error) {
 }
 
 // Create ...
-func (p Stats) Create(playerID primitive.ObjectID) error {
+func (s Stats) Create(playerID primitive.ObjectID) error {
 	var statsCol = database.StatsCol()
 
 	// default stats when create player
@@ -71,8 +72,8 @@ func (p Stats) Create(playerID primitive.ObjectID) error {
 	return nil
 }
 
-// Delete ...
-func (p Stats) Delete(playerID primitive.ObjectID) error {
+// DeleteByID ...
+func (s Stats) DeleteByID(playerID primitive.ObjectID) error {
 	var statsCol = database.StatsCol()
 
 	// filter delete by playerID
@@ -80,6 +81,72 @@ func (p Stats) Delete(playerID primitive.ObjectID) error {
 
 	// DeleteOne ...
 	if _, err := statsCol.DeleteOne(context.Background(), filter); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// DeleteAll ...
+func (s Stats) DeleteAll() error {
+	var statsCol = database.StatsCol()
+
+	// DeleteMany
+	if _, err := statsCol.DeleteMany(context.Background(), bson.M{}); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// GetList ...
+func (s Stats) GetList(page, limit int) ([]model.Stats, error) {
+	var (
+		statsCol = database.StatsCol()
+		stats    = make([]model.Stats, 0)
+	)
+
+	// options
+	opts := new(options.FindOptions)
+
+	if limit != 0 {
+		if page == 0 {
+			page = 1
+		}
+		opts.SetSkip(int64((page - 1) * limit))
+		opts.SetLimit(int64(limit))
+	}
+
+	cursor, err := statsCol.Find(context.Background(), bson.D{}, opts)
+	if err != nil {
+		return stats, err
+	}
+
+	if err = cursor.All(context.Background(), &stats); err != nil {
+		return nil, err
+	}
+
+	return stats, nil
+}
+
+// UpdateByID ...
+func (s Stats) UpdateByID(id primitive.ObjectID, stats model.Stats) error {
+	var statsCol = database.StatsCol()
+
+	// DeleteMany
+	if _, err := statsCol.UpdateOne(context.Background(), bson.M{"_id": id}, bson.M{"$set": stats}); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// UpdateByPlayerID ...
+func (s Stats) UpdateByPlayerID(playerID primitive.ObjectID, stats model.Stats) error {
+	var statsCol = database.StatsCol()
+
+	// DeleteMany
+	if _, err := statsCol.UpdateOne(context.Background(), bson.M{"playerID": playerID}, bson.M{"$set": stats}); err != nil {
 		return err
 	}
 

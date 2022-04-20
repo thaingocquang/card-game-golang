@@ -1,10 +1,10 @@
 package dao
 
 import (
-	"card-game-golang/dto"
 	"card-game-golang/model"
 	"card-game-golang/module/database"
 	"context"
+	"fmt"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -24,14 +24,15 @@ func (p Bot) FindByID(ID primitive.ObjectID) (model.Bot, error) {
 
 	// FindOne
 	if err := botCol.FindOne(context.Background(), filter).Decode(&bot); err != nil {
-		return model.Bot{}, err
+		fmt.Println(err)
+		return bot, err
 	}
 
 	return bot, nil
 }
 
 // Create ...
-func (p Bot) Create(bot dto.Bot) error {
+func (p Bot) Create(bot model.Bot) error {
 	var botCol = database.BotCol()
 
 	// InsertOne
@@ -43,27 +44,19 @@ func (p Bot) Create(bot dto.Bot) error {
 }
 
 // Update ...
-func (p Bot) Update(ID primitive.ObjectID, bot dto.Bot) error {
+func (p Bot) Update(ID primitive.ObjectID, bot model.Bot) error {
 	var botCol = database.BotCol()
 
-	update := model.Bot{
-		Name:         bot.Name,
-		TotalPoints:  bot.TotalPoints,
-		RemainPoints: bot.RemainPoints,
-		MinBet:       bot.MinBet,
-		MaxBet:       bot.MaxBet,
-	}
-
 	// UpdateOne
-	if _, err := botCol.UpdateOne(context.Background(), bson.M{"_id": ID}, bson.M{"$set": update}); err != nil {
+	if _, err := botCol.UpdateOne(context.Background(), bson.M{"_id": ID}, bson.M{"$set": bot}); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-// Delete ...
-func (p Bot) Delete(ID primitive.ObjectID) error {
+// DeleteByID ...
+func (p Bot) DeleteByID(ID primitive.ObjectID) error {
 	var botCol = database.BotCol()
 
 	// filter
@@ -71,6 +64,18 @@ func (p Bot) Delete(ID primitive.ObjectID) error {
 
 	// DeleteOne ...
 	if _, err := botCol.DeleteOne(context.Background(), filter); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// DeleteAll ...
+func (p Bot) DeleteAll() error {
+	var botCol = database.BotCol()
+
+	// DeleteMany ...
+	if _, err := botCol.DeleteMany(context.Background(), bson.M{}); err != nil {
 		return err
 	}
 

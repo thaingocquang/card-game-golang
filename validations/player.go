@@ -81,8 +81,8 @@ func (p Player) Update(next echo.HandlerFunc) echo.HandlerFunc {
 	}
 }
 
-// ValidateID ...
-func (p Player) ValidateID(next echo.HandlerFunc) echo.HandlerFunc {
+// MyProfile ...
+func (p Player) MyProfile(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		// GetJWTPayload
 		jwtPayload, err := util.GetJWTPayload(c)

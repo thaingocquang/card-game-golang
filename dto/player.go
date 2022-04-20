@@ -3,6 +3,7 @@ package dto
 import (
 	validation "github.com/go-ozzo/ozzo-validation"
 	"github.com/go-ozzo/ozzo-validation/is"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type (
@@ -27,12 +28,13 @@ type (
 
 	// Profile ...
 	Profile struct {
-		Name      string  `json:"name"`
-		Email     string  `json:"email"`
-		Point     int     `json:"point"`
-		TotalGame int     `json:"totalGame"`
-		WinGame   int     `json:"winGame"`
-		WinRate   float32 `json:"winRate"`
+		ID        primitive.ObjectID `json:"id"`
+		Name      string             `json:"name"`
+		Email     string             `json:"email"`
+		Point     int                `json:"point"`
+		TotalGame int                `json:"totalGame"`
+		WinGame   int                `json:"winGame"`
+		WinRate   float32            `json:"winRate"`
 	}
 )
 

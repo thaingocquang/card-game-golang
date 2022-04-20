@@ -1,35 +1,30 @@
 package route
 
 import (
-	"card-game-golang/controller"
-	"card-game-golang/validations"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-)
-
-var (
-	bot      = controller.Bot{}
-	adminVal = validations.Admin{}
 )
 
 // admin ...
 func admin(e *echo.Echo) {
 	admin := e.Group("/admin")
 
-	admin.POST("/login", auth.AdminLogin, adminVal.Login)
+	admin.POST("/login", authCtrl.AdminLogin, adminVal.Login)
 
 	// middleware
-	admin.Use(middleware.JWT(envVars.Jwt.SecretKey))
+	admin.Use(middleware.JWT([]byte(envVars.Jwt.SecretKey)))
 
-	admin.DELETE("/players/:id", nil)
-	admin.GET("/players/:id", nil)
-	admin.GET("/players", nil)
+	admin.GET("/players/:id", playerCtrl.GetByID, val.ValidateObjectID)
+	admin.GET("/players", playerCtrl.GetList)
+	admin.PUT("/players/:id", playerCtrl.UpdateByID, val.ValidateObjectID, playerVal.Update)
+	admin.DELETE("/players/:id", playerCtrl.DeleteByID, val.ValidateObjectID)
+	admin.DELETE("/players", playerCtrl.DeleteAll)
 
-	admin.POST("/bots", bot.CreateBot)
-	admin.GET("/bots/:id", bot.GetByID)
-	admin.GET("/bots/:id", bot.GetList)
-	admin.PUT("/bots/:id", bot.UpdateByID)
-	admin.DELETE("/bots/:id", bot.DeleteByID)
-	admin.DELETE("/bots", bot.DeleteAll)
+	admin.POST("/bots", botCtrl.Create, botVal.Create)
+	admin.GET("/bots/:id", botCtrl.GetByID, val.ValidateObjectID)
+	admin.GET("/bots", botCtrl.GetList)
+	admin.PUT("/bots/:id", botCtrl.UpdateByID, val.ValidateObjectID, botVal.Update)
+	admin.DELETE("/bots/:id", botCtrl.DeleteByID, val.ValidateObjectID)
+	admin.DELETE("/bots", botCtrl.DeleteAll)
 
 }

@@ -5,6 +5,7 @@ import (
 	"card-game-golang/model"
 	"card-game-golang/module/database"
 	"context"
+	"fmt"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -88,15 +89,34 @@ func (p Player) UpdateProfile(ID primitive.ObjectID, player dto.PlayerUpdate) er
 	return nil
 }
 
-// Delete ...
-func (p Player) Delete(ID primitive.ObjectID) error {
+// DeleteByID ...
+func (p Player) DeleteByID(ID primitive.ObjectID) error {
 	var playerCol = database.PlayerCol()
 
 	// filter
 	filter := bson.M{"_id": ID}
 
-	// DeleteOne ...
-	if _, err := playerCol.DeleteOne(context.Background(), filter); err != nil {
+	dr, err := playerCol.DeleteOne(context.Background(), filter)
+	if err != nil {
+		return err
+	}
+
+	fmt.Println(dr.DeletedCount)
+
+	//// DeleteOne ...
+	//if dr, err := playerCol.DeleteOne(context.Background(), filter); err != nil {
+	//	return err
+	//}
+
+	return nil
+}
+
+// DeleteAll ...
+func (p Player) DeleteAll() error {
+	var playerCol = database.PlayerCol()
+
+	// DeleteMany
+	if _, err := playerCol.DeleteMany(context.Background(), bson.M{}); err != nil {
 		return err
 	}
 
