@@ -1,9 +1,12 @@
 package dto
 
 import (
+	"card-game-golang/model"
 	validation "github.com/go-ozzo/ozzo-validation"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"math/rand"
 	"strconv"
+	"time"
 )
 
 const (
@@ -11,6 +14,20 @@ const (
 )
 
 type (
+	// GameJSON ...
+	GameJSON struct {
+		ID         primitive.ObjectID `json:"id"`
+		GameNo     int                `json:"gameNo"`
+		PlayerID   primitive.ObjectID `json:"playerID"`
+		BotID      primitive.ObjectID `json:"botID"`
+		WinnerID   primitive.ObjectID `json:"winnerID"`
+		PlayerHand Hand               `json:"playerHand"`
+		BotHand    Hand               `json:"botHand"`
+		BetValue   int                `json:"betValue"`
+		CreatedAt  time.Time          `json:"createdAt"`
+		UpdatedAt  time.Time          `json:"updatedAt"`
+	}
+
 	// GameVal ...
 	GameVal struct {
 		BetValue int `json:"betValue"`
@@ -18,20 +35,39 @@ type (
 
 	// Card ...
 	Card struct {
-		Name string `json:"name,omitempty" bson:"name,omitempty"`
-		Rank int    `json:"rank,omitempty" bson:"rank,omitempty"`
-		Suit int    `json:"suit,omitempty" bson:"suit,omitempty"`
+		Name string `json:"name,omitempty"`
+		Rank int    `json:"rank,omitempty"`
+		Suit int    `json:"suit,omitempty"`
 	}
 
 	// Hand ...
 	Hand struct {
-		Cards   []Card
-		MaxCard Card
+		Cards   []Card `json:"cards"`
+		MaxCard Card   `bson:"maxCard"`
 	}
 
 	// DeckCard ...
 	DeckCard []Card
 )
+
+// ConvertToBSON ...
+func (h Hand) ConvertToBSON() model.Hand {
+	var handBSON model.Hand
+	for _, v := range h.Cards {
+		handBSON.Cards = append(handBSON.Cards, model.Card{
+			Name: v.Name,
+			Rank: v.Rank,
+			Suit: v.Suit,
+		})
+	}
+	handBSON.MaxCard = model.Card{
+		Name: h.MaxCard.Name,
+		Rank: h.MaxCard.Rank,
+		Suit: h.MaxCard.Suit,
+	}
+
+	return handBSON
+}
 
 // Validate ...
 func (g GameVal) Validate() error {

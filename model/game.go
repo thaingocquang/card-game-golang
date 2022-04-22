@@ -1,7 +1,6 @@
 package model
 
 import (
-	"card-game-golang/dto"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"time"
 )
@@ -14,10 +13,26 @@ type (
 		PlayerID   primitive.ObjectID `bson:"playerID"`
 		BotID      primitive.ObjectID `bson:"botID"`
 		WinnerID   primitive.ObjectID `bson:"winnerID"`
-		PlayerHand dto.Hand           `bson:"playerHand"`
-		BotHand    dto.Hand           `bson:"botHand"`
+		PlayerHand Hand               `bson:"playerHand"`
+		BotHand    Hand               `bson:"botHand"`
 		BetValue   int                `bson:"betValue"`
-		CreatedAt  time.Time          `bson:"created_at"`
+		CreatedAt  time.Time          `bson:"createdAt"`
 		UpdatedAt  time.Time          `bson:"updatedAt"`
 	}
+
+	// Card ...
+	Card struct {
+		Name string `bson:"name,omitempty"`
+		Rank int    `bson:"rank,omitempty"`
+		Suit int    `bson:"suit,omitempty"`
+	}
+
+	// Hand ...
+	Hand struct {
+		Cards   []Card `bson:"cards"`
+		MaxCard Card   `bson:"maxCard"`
+	}
+
+	// DeckCard ...
+	DeckCard []Card
 )

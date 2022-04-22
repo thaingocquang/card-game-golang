@@ -50,11 +50,25 @@ func (b Bot) GetByID(id string) (model.Bot, error) {
 }
 
 // GetList ...
-func (b Bot) GetList(page, limit int) ([]model.Bot, int, error) {
+func (b Bot) GetList(page, limit int) ([]dto.BotJSON, int, error) {
+	bots := make([]dto.BotJSON, 0)
+
 	// call dao get list bot
-	bots, err := botDao.GetList(page, limit)
+	botBSONs, err := botDao.GetList(page, limit)
 	if err != nil {
 		return bots, 0, err
+	}
+
+	for _, bot := range botBSONs {
+		botJSON := dto.BotJSON{
+			ID:           bot.ID,
+			Name:         bot.Name,
+			TotalPoints:  bot.TotalPoints,
+			RemainPoints: bot.RemainPoints,
+			MinBet:       bot.MinBet,
+			MaxBet:       bot.MaxBet,
+		}
+		bots = append(bots, botJSON)
 	}
 
 	totalDoc := botDao.CountAllBot()

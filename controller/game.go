@@ -3,6 +3,7 @@ package controller
 import (
 	"card-game-golang/dto"
 	"card-game-golang/util"
+	"fmt"
 	"github.com/labstack/echo/v4"
 	"strconv"
 )
@@ -20,12 +21,12 @@ func (g Game) PlayByBotID(c echo.Context) error {
 	myID := jwtPayload["id"].(string)
 
 	// process data
-	gameBSON, err := gameService.PlayByBotID(body, botID, myID)
+	gameJSON, err := gameService.PlayByBotID(body, botID, myID)
 	if err != nil {
 		return util.Response400(c, nil, err.Error())
 	}
 
-	return util.Response200(c, gameBSON, "")
+	return util.Response200(c, gameJSON, "")
 }
 
 // PlayRandom ...
@@ -60,6 +61,8 @@ func (g Game) GetList(c echo.Context) error {
 	if err != nil {
 		return util.Response400(c, nil, err.Error())
 	}
+
+	fmt.Println(games)
 
 	data := map[string]interface{}{
 		"list": games,

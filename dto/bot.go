@@ -2,9 +2,20 @@ package dto
 
 import (
 	validation "github.com/go-ozzo/ozzo-validation"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type (
+	// BotJSON ...
+	BotJSON struct {
+		ID           primitive.ObjectID `json:"id"`
+		Name         string             `json:"name"`
+		TotalPoints  int                `json:"totalPoints"`
+		RemainPoints int                `json:"remainPoints"`
+		MinBet       int                `json:"minBet"`
+		MaxBet       int                `json:"maxBet"`
+	}
+
 	// Bot ...
 	Bot struct {
 		Name         string `json:"name"`
