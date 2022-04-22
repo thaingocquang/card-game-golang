@@ -57,7 +57,7 @@ func (s Stats) Create(playerID primitive.ObjectID) error {
 	var stats = model.Stats{
 		ID:        primitive.NewObjectID(),
 		PlayerID:  playerID,
-		Point:     0,
+		Point:     2000,
 		TotalGame: 0,
 		WinGame:   0,
 		WinRate:   0,

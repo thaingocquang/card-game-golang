@@ -61,6 +61,9 @@ func (b Bot) ValidateUpdate() error {
 		validation.Field(&b.TotalPoints,
 			validation.Min(0),
 			validation.Max(10000)),
+		validation.Field(&b.RemainPoints,
+			validation.Min(0),
+			validation.Max(10000)),
 		// validate field MinBet
 		validation.Field(&b.MinBet,
 			validation.Min(0),
