@@ -35,18 +35,27 @@ func (b Bot) Create(bot dto.Bot) error {
 }
 
 // GetByID ...
-func (b Bot) GetByID(id string) (model.Bot, error) {
+func (b Bot) GetByID(id string) (dto.BotJSON, error) {
 	// convert id string to objectID
 	objID, _ := primitive.ObjectIDFromHex(id)
 
 	// call dao get bot by id
 	bot, err := botDao.FindByID(objID)
 	if err != nil {
-		return bot, err
+		return dto.BotJSON{}, err
+	}
+
+	botJSON := dto.BotJSON{
+		ID:           bot.ID,
+		Name:         bot.Name,
+		TotalPoints:  bot.TotalPoints,
+		RemainPoints: bot.RemainPoints,
+		MinBet:       bot.MinBet,
+		MaxBet:       bot.MaxBet,
 	}
 
 	// success
-	return bot, err
+	return botJSON, err
 }
 
 // GetList ...
