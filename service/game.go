@@ -127,3 +127,17 @@ func (g Game) PlayRandom(gameVal dto.GameVal, myID string) (model.Game, error) {
 
 	return model.Game{}, nil
 }
+
+// GetList ...
+func (g Game) GetList(page, limit int) ([]model.Game, int, error) {
+	// call dao get list bot
+	games, err := gameDao.GetList(page, limit)
+	if err != nil {
+		return games, 0, err
+	}
+
+	totalDoc := gameDao.CountAllGame()
+
+	// success
+	return games, totalDoc, err
+}
