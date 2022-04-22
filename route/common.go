@@ -20,6 +20,6 @@ func common(e *echo.Echo) {
 	common.PATCH("/me/password", playerCtrl.UpdateMyPassword)
 
 	common.POST("/games/:id", gameCtrl.PlayByBotID, val.ValidateObjectID, gameVal.GameValue)
-	common.POST("/games", gameCtrl.PlayRandom)
+	common.POST("/games", gameCtrl.PlayRandom, gameVal.GameValue)
 	common.GET("/games", gameCtrl.RecentGame)
 }

@@ -30,7 +30,19 @@ func (g Game) PlayByBotID(c echo.Context) error {
 
 // PlayRandom ...
 func (g Game) PlayRandom(c echo.Context) error {
-	return nil
+	var body = c.Get("body").(dto.GameVal)
+
+	// jwtPayload for get my id
+	jwtPayload, _ := util.GetJWTPayload(c)
+	myID := jwtPayload["id"].(string)
+
+	// process data
+	gameBSON, err := gameService.PlayRandom(body, myID)
+	if err != nil {
+		return util.Response400(c, nil, err.Error())
+	}
+
+	return util.Response200(c, gameBSON, "")
 }
 
 // RecentGame ...

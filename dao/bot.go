@@ -13,7 +13,7 @@ import (
 type Bot struct{}
 
 // FindByID ...
-func (p Bot) FindByID(ID primitive.ObjectID) (model.Bot, error) {
+func (b Bot) FindByID(ID primitive.ObjectID) (model.Bot, error) {
 	var (
 		botCol = database.BotCol()
 		bot    model.Bot
@@ -32,7 +32,7 @@ func (p Bot) FindByID(ID primitive.ObjectID) (model.Bot, error) {
 }
 
 // Create ...
-func (p Bot) Create(bot model.Bot) error {
+func (b Bot) Create(bot model.Bot) error {
 	var botCol = database.BotCol()
 
 	// InsertOne
@@ -44,7 +44,7 @@ func (p Bot) Create(bot model.Bot) error {
 }
 
 // Update ...
-func (p Bot) Update(ID primitive.ObjectID, bot model.Bot) error {
+func (b Bot) Update(ID primitive.ObjectID, bot model.Bot) error {
 	var botCol = database.BotCol()
 
 	// UpdateOne
@@ -56,7 +56,7 @@ func (p Bot) Update(ID primitive.ObjectID, bot model.Bot) error {
 }
 
 // DeleteByID ...
-func (p Bot) DeleteByID(ID primitive.ObjectID) error {
+func (b Bot) DeleteByID(ID primitive.ObjectID) error {
 	var botCol = database.BotCol()
 
 	// filter
@@ -83,7 +83,7 @@ func (p Bot) DeleteAll() error {
 }
 
 // GetList ...
-func (p Bot) GetList(page, limit int) ([]model.Bot, error) {
+func (b Bot) GetList(page, limit int) ([]model.Bot, error) {
 	var (
 		botCol = database.BotCol()
 		bots   []model.Bot
@@ -109,13 +109,11 @@ func (p Bot) GetList(page, limit int) ([]model.Bot, error) {
 		return nil, err
 	}
 
-	fmt.Println(bots)
-
 	return bots, nil
 }
 
 // CountAllBot ...
-func (g Bot) CountAllBot() int {
+func (b Bot) CountAllBot() int {
 	var (
 		botCol = database.BotCol()
 		ctx    = context.Background()
