@@ -52,7 +52,11 @@ func (h Hand) SumRank() int {
 		if c.Rank == 14 {
 			sumRank += 1
 		} else {
-			sumRank += c.Rank
+			if c.Rank > 10 {
+				sumRank += 10
+			} else {
+				sumRank += c.Rank
+			}
 		}
 	}
 	return sumRank % 10
