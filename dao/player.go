@@ -150,3 +150,16 @@ func (p Player) IsEmailExisted(email string) (bool, error) {
 
 	return count > 0, nil
 }
+
+// CountAllPlayer ...
+func (g Player) CountAllPlayer() int {
+	var (
+		playerCol = database.PlayerCol()
+		ctx       = context.Background()
+	)
+	count, err := playerCol.CountDocuments(ctx, bson.D{})
+	if err != nil {
+		return 0
+	}
+	return int(count)
+}

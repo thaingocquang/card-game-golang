@@ -115,3 +115,15 @@ func (g Game) PlayByBotID(gameVal dto.GameVal, botID string, myID string) (model
 	return gameBSON, nil
 
 }
+
+func (g Game) PlayRandom(gameVal dto.GameVal, myID string) (model.Game, error) {
+	// get all bot
+
+	// filter bot have totalPoint > betValue & in range (minBet, maxBet)
+
+	// random bot in list
+
+	// r
+
+	return model.Game{}, nil
+}

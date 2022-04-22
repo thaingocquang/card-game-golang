@@ -86,7 +86,7 @@ func (p Bot) DeleteAll() error {
 func (p Bot) GetList(page, limit int) ([]model.Bot, error) {
 	var (
 		botCol = database.BotCol()
-		bots   = make([]model.Bot, 0)
+		bots   []model.Bot
 	)
 
 	// options
@@ -109,5 +109,20 @@ func (p Bot) GetList(page, limit int) ([]model.Bot, error) {
 		return nil, err
 	}
 
+	fmt.Println(bots)
+
 	return bots, nil
+}
+
+// CountAllBot ...
+func (g Bot) CountAllBot() int {
+	var (
+		botCol = database.BotCol()
+		ctx    = context.Background()
+	)
+	count, err := botCol.CountDocuments(ctx, bson.D{})
+	if err != nil {
+		return 0
+	}
+	return int(count)
 }

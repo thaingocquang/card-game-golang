@@ -4,6 +4,7 @@ import (
 	"card-game-golang/dto"
 	"card-game-golang/model"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"golang.org/x/crypto/bcrypt"
 )
 
 // Player ...
@@ -59,11 +60,17 @@ func (p Player) UpdateProfile(ID string, update dto.ProfileUpdate) error {
 		return err
 	}
 
+	// hash player password
+	bytes, err := bcrypt.GenerateFromPassword([]byte(update.Password), 14)
+	if err != nil {
+		return err
+	}
+
 	// update player to playerDao
 	playerUpdateBSON := model.Player{
 		Name:     update.Name,
 		Email:    update.Email,
-		Password: update.Password,
+		Password: string(bytes),
 	}
 	if err := playerDao.Update(objID, playerUpdateBSON); err != nil {
 		return err
@@ -80,11 +87,17 @@ func (p Player) Update(ID string, update dto.PlayerUpdate) error {
 		return err
 	}
 
+	// hash player password
+	bytes, err := bcrypt.GenerateFromPassword([]byte(update.Password), 14)
+	if err != nil {
+		return err
+	}
+
 	// update player to playerDao
 	playerUpdateBSON := model.Player{
 		Name:     update.Name,
 		Email:    update.Email,
-		Password: update.Password,
+		Password: string(bytes),
 	}
 
 	// call dao update player
@@ -96,19 +109,19 @@ func (p Player) Update(ID string, update dto.PlayerUpdate) error {
 }
 
 // GetList ...
-func (p Player) GetList(page, limit int) ([]dto.Profile, error) {
+func (p Player) GetList(page, limit int) ([]dto.Profile, int, error) {
 	profiles := make([]dto.Profile, 0)
 
 	// get player
 	players, err := playerDao.GetList(page, limit)
 	if err != nil {
-		return profiles, err
+		return profiles, 0, err
 	}
 
 	// get statistics
 	stats, err := statsDao.GetList(page, limit)
 	if err != nil {
-		return profiles, err
+		return profiles, 0, err
 	}
 
 	if len(players) == len(stats) {
@@ -126,7 +139,9 @@ func (p Player) GetList(page, limit int) ([]dto.Profile, error) {
 		}
 	}
 
-	return profiles, nil
+	totalDoc := playerDao.CountAllPlayer()
+
+	return profiles, totalDoc, nil
 }
 
 // DeleteByID ...

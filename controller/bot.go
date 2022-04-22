@@ -44,12 +44,21 @@ func (b Bot) GetList(c echo.Context) error {
 	limit, _ := strconv.Atoi(c.QueryParam("limit"))
 
 	// process
-	bots, err := botService.GetList(page, limit)
+	bots, totalDocs, err := botService.GetList(page, limit)
 	if err != nil {
 		return util.Response400(c, nil, err.Error())
 	}
 
-	return util.Response200(c, bots, "")
+	data := map[string]interface{}{
+		"list": bots,
+		"paginationInfo": map[string]interface{}{
+			"page":  page,
+			"limit": limit,
+			"total": totalDocs,
+		},
+	}
+
+	return util.Response200(c, data, "")
 }
 
 // UpdateByID ...

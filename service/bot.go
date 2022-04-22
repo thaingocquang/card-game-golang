@@ -50,15 +50,17 @@ func (b Bot) GetByID(id string) (model.Bot, error) {
 }
 
 // GetList ...
-func (b Bot) GetList(page, limit int) ([]model.Bot, error) {
+func (b Bot) GetList(page, limit int) ([]model.Bot, int, error) {
 	// call dao get list bot
 	bots, err := botDao.GetList(page, limit)
 	if err != nil {
-		return bots, err
+		return bots, 0, err
 	}
 
+	totalDoc := botDao.CountAllBot()
+
 	// success
-	return bots, err
+	return bots, totalDoc, err
 }
 
 // UpdateByID ...

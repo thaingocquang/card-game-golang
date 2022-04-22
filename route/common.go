@@ -15,8 +15,8 @@ func common(e *echo.Echo) {
 	// middleware
 	common.Use(middleware.JWT([]byte(envVars.Jwt.SecretKey)))
 
-	common.GET("/me", playerCtrl.MyProfile, playerVal.IDInToken)
-	common.PUT("/me", playerCtrl.UpdatePlayer, playerVal.IDInToken, playerVal.Update)
+	common.GET("/profile", playerCtrl.MyProfile, playerVal.IDInToken)
+	common.PUT("/players", playerCtrl.UpdatePlayer, playerVal.IDInToken, playerVal.Update)
 	common.PATCH("/me/password", playerCtrl.UpdateMyPassword)
 
 	common.POST("/games/:id", gameCtrl.PlayByBotID, val.ValidateObjectID, gameVal.GameValue)

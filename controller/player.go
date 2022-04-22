@@ -65,13 +65,22 @@ func (p Player) GetList(c echo.Context) error {
 	limit, _ := strconv.Atoi(c.QueryParam("limit"))
 
 	// process
-	profiles, err := playerService.GetList(page, limit)
+	profiles, totalDoc, err := playerService.GetList(page, limit)
 	if err != nil {
 		return util.Response400(c, nil, err.Error())
 	}
 
+	data := map[string]interface{}{
+		"list": profiles,
+		"paginationInfo": map[string]interface{}{
+			"page":  page,
+			"limit": limit,
+			"total": totalDoc,
+		},
+	}
+
 	// success
-	return util.Response200(c, profiles, "")
+	return util.Response200(c, data, "")
 }
 
 // UpdateProfileByID ...
