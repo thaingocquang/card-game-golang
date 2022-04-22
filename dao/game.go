@@ -24,10 +24,10 @@ func (g Game) Create(game model.Game) error {
 // CountAllGame ...
 func (g Game) CountAllGame() int {
 	var (
-		statsCol = database.StatsCol()
-		ctx      = context.Background()
+		gameCol = database.GameCol()
+		ctx     = context.Background()
 	)
-	count, err := statsCol.CountDocuments(ctx, bson.D{})
+	count, err := gameCol.CountDocuments(ctx, bson.D{})
 	if err != nil {
 		return 0
 	}
