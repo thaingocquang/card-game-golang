@@ -14,8 +14,8 @@ func admin(e *echo.Echo) {
 	// middleware
 	admin.Use(middleware.JWT([]byte(envVars.Jwt.SecretKey)))
 
-	admin.GET("/players/:id", playerCtrl.GetByID, val.ValidateObjectID)
-	admin.GET("/players", playerCtrl.GetList)
+	admin.GET("/profiles/:id", playerCtrl.GetByID, val.ValidateObjectID)
+	admin.GET("/profiles", playerCtrl.GetList)
 	admin.PUT("/profiles/:id", playerCtrl.UpdateProfileByID, val.ValidateObjectID, playerVal.Profile)
 	admin.DELETE("/profiles/:id", playerCtrl.DeleteByID, val.ValidateObjectID)
 	admin.DELETE("/profiles", playerCtrl.DeleteAll)
