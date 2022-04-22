@@ -16,9 +16,9 @@ func admin(e *echo.Echo) {
 
 	admin.GET("/players/:id", playerCtrl.GetByID, val.ValidateObjectID)
 	admin.GET("/players", playerCtrl.GetList)
-	admin.PUT("/profile/:id", playerCtrl.UpdateProfileByID, val.ValidateObjectID, playerVal.Profile)
-	admin.DELETE("/players/:id", playerCtrl.DeleteByID, val.ValidateObjectID)
-	admin.DELETE("/players", playerCtrl.DeleteAll)
+	admin.PUT("/profiles/:id", playerCtrl.UpdateProfileByID, val.ValidateObjectID, playerVal.Profile)
+	admin.DELETE("/profiles/:id", playerCtrl.DeleteByID, val.ValidateObjectID)
+	admin.DELETE("/profiles", playerCtrl.DeleteAll)
 
 	admin.POST("/bots", botCtrl.Create, botVal.Create)
 	admin.GET("/bots/:id", botCtrl.GetByID, val.ValidateObjectID)

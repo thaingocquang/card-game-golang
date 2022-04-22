@@ -23,7 +23,7 @@ func GenerateUserToken(data map[string]interface{}) (string, error) {
 	claims := &JwtCustomClaims{
 		data,
 		jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(time.Minute * 15).Unix(),
+			ExpiresAt: time.Now().Add(time.Minute * 120).Unix(),
 		},
 	}
 
