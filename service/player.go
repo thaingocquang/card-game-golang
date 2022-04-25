@@ -4,6 +4,7 @@ import (
 	"card-game-golang/dto"
 	"card-game-golang/model"
 	"card-game-golang/util"
+	"errors"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -95,7 +96,7 @@ func (p Player) Update(ID string, update dto.PlayerUpdate) error {
 	}
 
 	if err := bcrypt.CompareHashAndPassword([]byte(player.Password), []byte(update.Password)); err != nil {
-		return err
+		return errors.New("wrong password, please input correct password again")
 	}
 
 	// hash player password
