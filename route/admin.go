@@ -27,5 +27,5 @@ func admin(e *echo.Echo) {
 	admin.DELETE("/bots/:id", botCtrl.DeleteByID, val.ValidateObjectID)
 	admin.DELETE("/bots", botCtrl.DeleteAll)
 
-	admin.GET("/games", gameCtrl.GetList)
+	admin.GET("/games", gameCtrl.GetList, val.Paging)
 }

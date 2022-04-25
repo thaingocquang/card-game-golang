@@ -5,7 +5,6 @@ import (
 	"card-game-golang/util"
 	"fmt"
 	"github.com/labstack/echo/v4"
-	"strconv"
 )
 
 // Game ...
@@ -53,25 +52,15 @@ func (g Game) RecentGame(c echo.Context) error {
 
 // GetList ...
 func (g Game) GetList(c echo.Context) error {
-	page, _ := strconv.Atoi(c.QueryParam("page"))
-	limit, _ := strconv.Atoi(c.QueryParam("limit"))
+	paging := c.Get("paging").(util.Paging)
 
 	// process
-	games, totalDocs, err := gameService.GetList(page, limit)
+	games, err := gameService.GetList(&paging)
 	if err != nil {
 		return util.Response400(c, nil, err.Error())
 	}
 
 	fmt.Println(games)
 
-	data := map[string]interface{}{
-		"list": games,
-		"paginationInfo": map[string]interface{}{
-			"page":  page,
-			"limit": limit,
-			"total": totalDocs,
-		},
-	}
-
-	return util.Response200(c, data, "")
+	return util.Response200Paging(c, games, paging, "")
 }

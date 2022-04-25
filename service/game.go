@@ -3,6 +3,7 @@ package service
 import (
 	"card-game-golang/dto"
 	"card-game-golang/model"
+	"card-game-golang/util"
 	"errors"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"math/rand"
@@ -280,13 +281,13 @@ func (g Game) PlayRandom(gameVal dto.GameVal, myID string) (dto.GameJSON, error)
 }
 
 // GetList ...
-func (g Game) GetList(page, limit int) ([]dto.GameJSON, int, error) {
+func (g Game) GetList(paging *util.Paging) ([]dto.GameJSON, error) {
 	gameJSONs := make([]dto.GameJSON, 0)
 
 	// call dao get list bot
-	gameBSONs, err := gameDao.GetList(page, limit)
+	gameBSONs, err := gameDao.GetList(paging)
 	if err != nil {
-		return gameJSONs, 0, err
+		return gameJSONs, err
 	}
 
 	for _, game := range gameBSONs {
@@ -333,8 +334,6 @@ func (g Game) GetList(page, limit int) ([]dto.GameJSON, int, error) {
 		gameJSONs = append(gameJSONs, gameJSON)
 	}
 
-	totalDoc := gameDao.CountAllGame()
-
 	// success
-	return gameJSONs, totalDoc, err
+	return gameJSONs, err
 }

@@ -3,6 +3,7 @@ package dao
 import (
 	"card-game-golang/model"
 	"card-game-golang/module/database"
+	"card-game-golang/util"
 	"context"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -35,7 +36,7 @@ func (Game) CountAllGame() int {
 }
 
 // GetList ...
-func (Game) GetList(page, limit int) ([]model.Game, error) {
+func (Game) GetList(paging *util.Paging) ([]model.Game, error) {
 	var (
 		gameCol = database.GameCol()
 		games   []model.Game
@@ -43,14 +44,17 @@ func (Game) GetList(page, limit int) ([]model.Game, error) {
 
 	// options
 	opts := new(options.FindOptions)
+	opts.SetSkip(int64((paging.Page - 1) * paging.Limit))
+	opts.SetLimit(int64(paging.Limit))
 
-	if limit != 0 {
-		if page == 0 {
-			page = 1
-		}
-		opts.SetSkip(int64((page - 1) * limit))
-		opts.SetLimit(int64(limit))
+	// count document in playerCol
+	count, err := gameCol.CountDocuments(context.Background(), bson.D{})
+	if err != nil {
+		return nil, err
 	}
+
+	// set paging total
+	paging.Total = count
 
 	cursor, err := gameCol.Find(context.Background(), bson.D{}, opts)
 	if err != nil {
