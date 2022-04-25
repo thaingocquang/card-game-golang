@@ -99,22 +99,36 @@ func (p Player) Update(ID string, update dto.PlayerUpdate) error {
 		return errors.New("wrong password, please input correct password again")
 	}
 
-	// hash player password
-	bytes, err := bcrypt.GenerateFromPassword([]byte(update.NewPassword), 14)
-	if err != nil {
-		return err
-	}
+	if update.NewPassword != "" {
+		// hash player password
+		bytes, err := bcrypt.GenerateFromPassword([]byte(update.NewPassword), 14)
+		if err != nil {
+			return err
+		}
 
-	// update player to playerDao
-	playerUpdateBSON := model.Player{
-		Name:     update.Name,
-		Email:    update.Email,
-		Password: string(bytes),
-	}
+		// update player to playerDao
+		playerUpdateBSON := model.Player{
+			Name:     update.Name,
+			Email:    update.Email,
+			Password: string(bytes),
+		}
 
-	// call dao update player
-	if err := playerDao.Update(objID, playerUpdateBSON); err != nil {
-		return err
+		// call dao update player
+		if err := playerDao.Update(objID, playerUpdateBSON); err != nil {
+			return err
+		}
+
+	} else {
+		// update player to playerDao
+		playerUpdateBSON := model.Player{
+			Name:  update.Name,
+			Email: update.Email,
+		}
+
+		// call dao update player
+		if err := playerDao.Update(objID, playerUpdateBSON); err != nil {
+			return err
+		}
 	}
 
 	return nil

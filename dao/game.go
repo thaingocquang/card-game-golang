@@ -6,6 +6,7 @@ import (
 	"card-game-golang/util"
 	"context"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
@@ -59,6 +60,29 @@ func (Game) GetList(paging *util.Paging) ([]model.Game, error) {
 	cursor, err := gameCol.Find(context.Background(), bson.D{}, opts)
 	if err != nil {
 		return games, err
+	}
+
+	if err = cursor.All(context.Background(), &games); err != nil {
+		return nil, err
+	}
+
+	return games, nil
+}
+
+// RecentByPlayerID ...
+func (Game) RecentByPlayerID(ID primitive.ObjectID) ([]model.Game, error) {
+	var (
+		gameCol = database.GameCol()
+		games   []model.Game
+	)
+
+	// options
+	opts := new(options.FindOptions)
+	opts.SetLimit(5)
+
+	cursor, err := gameCol.Find(context.Background(), bson.M{"playerID": ID}, opts)
+	if err != nil {
+		return nil, err
 	}
 
 	if err = cursor.All(context.Background(), &games); err != nil {

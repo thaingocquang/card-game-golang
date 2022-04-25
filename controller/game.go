@@ -47,7 +47,15 @@ func (g Game) PlayRandom(c echo.Context) error {
 
 // RecentGame ...
 func (g Game) RecentGame(c echo.Context) error {
-	return nil
+	var id = c.Get("id").(string)
+
+	// process
+	recentGames, err := gameService.Recent(id)
+	if err != nil {
+		return util.Response400(c, nil, err.Error())
+	}
+
+	return util.Response200(c, recentGames, "")
 }
 
 // GetList ...

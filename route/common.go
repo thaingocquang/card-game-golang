@@ -21,5 +21,5 @@ func common(e *echo.Echo) {
 
 	common.POST("/games/:id", gameCtrl.PlayByBotID, val.ValidateObjectID, gameVal.GameValue)
 	common.POST("/games", gameCtrl.PlayRandom, gameVal.GameValue)
-	common.GET("/games", gameCtrl.RecentGame)
+	common.GET("/games", gameCtrl.RecentGame, playerVal.IDInToken)
 }

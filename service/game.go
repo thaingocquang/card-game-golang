@@ -337,3 +337,35 @@ func (g Game) GetList(paging *util.Paging) ([]dto.GameJSON, error) {
 	// success
 	return gameJSONs, err
 }
+
+// Recent ...
+func (g Game) Recent(ID string) ([]dto.GameJSON, error) {
+	gameJSONs := make([]dto.GameJSON, 0)
+
+	objID, err := primitive.ObjectIDFromHex(ID)
+
+	// call dao get list bot
+	gameBSONs, err := gameDao.RecentByPlayerID(objID)
+	if err != nil {
+		return gameJSONs, err
+	}
+
+	for _, game := range gameBSONs {
+		gameJSON := dto.GameJSON{
+			ID:         game.ID,
+			GameNo:     game.GameNo,
+			PlayerID:   game.PlayerID,
+			BotID:      game.BotID,
+			WinnerID:   game.WinnerID,
+			PlayerHand: dto.Hand{},
+			BotHand:    dto.Hand{},
+			BetValue:   game.BetValue,
+			CreatedAt:  game.CreatedAt,
+			UpdatedAt:  game.UpdatedAt,
+		}
+		gameJSONs = append(gameJSONs, gameJSON)
+	}
+
+	// success
+	return gameJSONs, err
+}
