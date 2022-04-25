@@ -4,7 +4,6 @@ import (
 	"card-game-golang/dto"
 	"card-game-golang/util"
 	"github.com/labstack/echo/v4"
-	"strconv"
 )
 
 // Player ...
@@ -59,28 +58,21 @@ func (p Player) GetByID(c echo.Context) error {
 	return util.Response200(c, profile, "")
 }
 
-// GetList ...
-func (p Player) GetList(c echo.Context) error {
-	page, _ := strconv.Atoi(c.QueryParam("page"))
-	limit, _ := strconv.Atoi(c.QueryParam("limit"))
+// GetListProfile ...
+func (p Player) GetListProfile(c echo.Context) error {
+	paging := c.Get("paging").(util.Paging)
+
+	// fulfill
+	paging.Fulfill()
 
 	// process
-	profiles, totalDoc, err := playerService.GetList(page, limit)
+	profiles, err := playerService.GetListProfile(&paging)
 	if err != nil {
 		return util.Response400(c, nil, err.Error())
 	}
 
-	data := map[string]interface{}{
-		"list": profiles,
-		"paginationInfo": map[string]interface{}{
-			"page":  page,
-			"limit": limit,
-			"total": totalDoc,
-		},
-	}
-
 	// success
-	return util.Response200(c, data, "")
+	return util.Response200Paging(c, profiles, paging, "")
 }
 
 // UpdateProfileByID ...
@@ -125,3 +117,15 @@ func (p Player) DeleteAll(c echo.Context) error {
 	// success
 	return util.Response200(c, nil, "")
 }
+
+//// Test ...
+//func (p Player) Test(c echo.Context) error {
+//	// process
+//	err := playerService.Test()
+//	if err != nil {
+//		return util.Response400(c, nil, err.Error())
+//	}
+//
+//	// success
+//	return util.Response200(c, nil, "")
+//}

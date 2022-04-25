@@ -3,6 +3,7 @@ package dao
 import (
 	"card-game-golang/model"
 	"card-game-golang/module/database"
+	"card-game-golang/util"
 	"context"
 	"fmt"
 	"go.mongodb.org/mongo-driver/bson"
@@ -13,7 +14,7 @@ import (
 type Bot struct{}
 
 // FindByID ...
-func (b Bot) FindByID(ID primitive.ObjectID) (model.Bot, error) {
+func (Bot) FindByID(ID primitive.ObjectID) (model.Bot, error) {
 	var (
 		botCol = database.BotCol()
 		bot    model.Bot
@@ -32,7 +33,7 @@ func (b Bot) FindByID(ID primitive.ObjectID) (model.Bot, error) {
 }
 
 // Create ...
-func (b Bot) Create(bot model.Bot) error {
+func (Bot) Create(bot model.Bot) error {
 	var botCol = database.BotCol()
 
 	// InsertOne
@@ -44,7 +45,7 @@ func (b Bot) Create(bot model.Bot) error {
 }
 
 // Update ...
-func (b Bot) Update(ID primitive.ObjectID, bot model.Bot) error {
+func (Bot) Update(ID primitive.ObjectID, bot model.Bot) error {
 	var botCol = database.BotCol()
 
 	// UpdateOne
@@ -56,7 +57,7 @@ func (b Bot) Update(ID primitive.ObjectID, bot model.Bot) error {
 }
 
 // DeleteByID ...
-func (b Bot) DeleteByID(ID primitive.ObjectID) error {
+func (Bot) DeleteByID(ID primitive.ObjectID) error {
 	var botCol = database.BotCol()
 
 	// filter
@@ -71,7 +72,7 @@ func (b Bot) DeleteByID(ID primitive.ObjectID) error {
 }
 
 // DeleteAll ...
-func (p Bot) DeleteAll() error {
+func (Bot) DeleteAll() error {
 	var botCol = database.BotCol()
 
 	// DeleteMany ...
@@ -82,8 +83,38 @@ func (p Bot) DeleteAll() error {
 	return nil
 }
 
+//// GetList ...
+//func (Bot) GetList(page, limit int) ([]model.Bot, error) {
+//	var (
+//		botCol = database.BotCol()
+//		bots   []model.Bot
+//	)
+//
+//	// options
+//	opts := new(options.FindOptions)
+//
+//	if limit != 0 {
+//		if page == 0 {
+//			page = 1
+//		}
+//		opts.SetSkip(int64((page - 1) * limit))
+//		opts.SetLimit(int64(limit))
+//	}
+//
+//	cursor, err := botCol.Find(context.Background(), bson.D{}, opts)
+//	if err != nil {
+//		return bots, err
+//	}
+//
+//	if err = cursor.All(context.Background(), &bots); err != nil {
+//		return nil, err
+//	}
+//
+//	return bots, nil
+//}
+
 // GetList ...
-func (b Bot) GetList(page, limit int) ([]model.Bot, error) {
+func (Bot) GetList(paging *util.Paging) ([]model.Bot, error) {
 	var (
 		botCol = database.BotCol()
 		bots   []model.Bot
@@ -91,18 +122,19 @@ func (b Bot) GetList(page, limit int) ([]model.Bot, error) {
 
 	// options
 	opts := new(options.FindOptions)
+	opts.SetSkip(int64((paging.Page - 1) * paging.Limit))
+	opts.SetLimit(int64(paging.Limit))
 
-	if limit != 0 {
-		if page == 0 {
-			page = 1
-		}
-		opts.SetSkip(int64((page - 1) * limit))
-		opts.SetLimit(int64(limit))
+	count, err := botCol.CountDocuments(context.Background(), bson.D{})
+	if err != nil {
+		return nil, err
 	}
+
+	paging.Total = count
 
 	cursor, err := botCol.Find(context.Background(), bson.D{}, opts)
 	if err != nil {
-		return bots, err
+		return nil, err
 	}
 
 	if err = cursor.All(context.Background(), &bots); err != nil {
@@ -113,7 +145,7 @@ func (b Bot) GetList(page, limit int) ([]model.Bot, error) {
 }
 
 // CountAllBot ...
-func (b Bot) CountAllBot() int {
+func (Bot) CountAllBot() int {
 	var (
 		botCol = database.BotCol()
 		ctx    = context.Background()

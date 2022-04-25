@@ -10,7 +10,7 @@ import (
 
 type Game struct{}
 
-func (g Game) Create(game model.Game) error {
+func (Game) Create(game model.Game) error {
 	var gameCol = database.GameCol()
 
 	// InsertOne
@@ -22,7 +22,7 @@ func (g Game) Create(game model.Game) error {
 }
 
 // CountAllGame ...
-func (g Game) CountAllGame() int {
+func (Game) CountAllGame() int {
 	var (
 		gameCol = database.GameCol()
 		ctx     = context.Background()
@@ -35,7 +35,7 @@ func (g Game) CountAllGame() int {
 }
 
 // GetList ...
-func (g Game) GetList(page, limit int) ([]model.Game, error) {
+func (Game) GetList(page, limit int) ([]model.Game, error) {
 	var (
 		gameCol = database.GameCol()
 		games   []model.Game

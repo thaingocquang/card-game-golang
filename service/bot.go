@@ -3,6 +3,7 @@ package service
 import (
 	"card-game-golang/dto"
 	"card-game-golang/model"
+	"card-game-golang/util"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"time"
 )
@@ -58,14 +59,42 @@ func (b Bot) GetByID(id string) (dto.BotJSON, error) {
 	return botJSON, err
 }
 
+//// GetList ...
+//func (b Bot) GetList(page, limit int) ([]dto.BotJSON, int, error) {
+//	bots := make([]dto.BotJSON, 0)
+//
+//	// call dao get list bot
+//	botBSONs, err := botDao.GetList(page, limit)
+//	if err != nil {
+//		return bots, 0, err
+//	}
+//
+//	for _, bot := range botBSONs {
+//		botJSON := dto.BotJSON{
+//			ID:           bot.ID,
+//			Name:         bot.Name,
+//			TotalPoints:  bot.TotalPoints,
+//			RemainPoints: bot.RemainPoints,
+//			MinBet:       bot.MinBet,
+//			MaxBet:       bot.MaxBet,
+//		}
+//		bots = append(bots, botJSON)
+//	}
+//
+//	totalDoc := botDao.CountAllBot()
+//
+//	// success
+//	return bots, totalDoc, err
+//}
+
 // GetList ...
-func (b Bot) GetList(page, limit int) ([]dto.BotJSON, int, error) {
+func (b Bot) GetList(paging *util.Paging) ([]dto.BotJSON, error) {
 	bots := make([]dto.BotJSON, 0)
 
 	// call dao get list bot
-	botBSONs, err := botDao.GetList(page, limit)
+	botBSONs, err := botDao.GetList(paging)
 	if err != nil {
-		return bots, 0, err
+		return bots, err
 	}
 
 	for _, bot := range botBSONs {
@@ -80,10 +109,8 @@ func (b Bot) GetList(page, limit int) ([]dto.BotJSON, int, error) {
 		bots = append(bots, botJSON)
 	}
 
-	totalDoc := botDao.CountAllBot()
-
 	// success
-	return bots, totalDoc, err
+	return bots, err
 }
 
 // UpdateByID ...

@@ -135,10 +135,13 @@ func (g Game) PlayRandom(gameVal dto.GameVal, myID string) (dto.GameJSON, error)
 	gameJSON := dto.GameJSON{}
 
 	// get all bot
-	bots, err := botDao.GetList(0, 0)
-	if err != nil {
-		return gameJSON, err
-	}
+	//bots, err := botDao.GetList(0, 0)
+	//if err != nil {
+	//	return gameJSON, err
+	//}
+
+	// delete
+	var bots []model.Bot
 
 	// filter bot have totalPoint > betValue & in range (minBet, maxBet)
 	validBots := make([]model.Bot, 0)

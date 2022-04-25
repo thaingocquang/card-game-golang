@@ -3,6 +3,7 @@ package service
 import (
 	"card-game-golang/dto"
 	"card-game-golang/model"
+	"card-game-golang/util"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -11,8 +12,8 @@ import (
 type Player struct{}
 
 // GetByID ...
-func (p Player) GetByID(id string) (dto.Profile, error) {
-	var profile dto.Profile
+func (p Player) GetByID(id string) (dto.MyProfile, error) {
+	var profile dto.MyProfile
 
 	// get objectID from string
 	objID, err := primitive.ObjectIDFromHex(id)
@@ -32,10 +33,11 @@ func (p Player) GetByID(id string) (dto.Profile, error) {
 		return profile, err
 	}
 
-	profile = dto.Profile{
+	profile = dto.MyProfile{
 		ID:        player.ID,
 		Name:      player.Name,
 		Email:     player.Email,
+		Password:  player.Password,
 		Point:     stats.Point,
 		TotalGame: stats.TotalGame,
 		WinGame:   stats.WinGame,
@@ -87,8 +89,17 @@ func (p Player) Update(ID string, update dto.PlayerUpdate) error {
 		return err
 	}
 
+	player, err := playerDao.FindByID(objID)
+	if err != nil {
+		return err
+	}
+
+	if err := bcrypt.CompareHashAndPassword([]byte(player.Password), []byte(update.Password)); err != nil {
+		return err
+	}
+
 	// hash player password
-	bytes, err := bcrypt.GenerateFromPassword([]byte(update.Password), 14)
+	bytes, err := bcrypt.GenerateFromPassword([]byte(update.NewPassword), 14)
 	if err != nil {
 		return err
 	}
@@ -108,40 +119,66 @@ func (p Player) Update(ID string, update dto.PlayerUpdate) error {
 	return nil
 }
 
-// GetList ...
-func (p Player) GetList(page, limit int) ([]dto.Profile, int, error) {
-	profiles := make([]dto.Profile, 0)
+//// GetList ...
+//func (p Player) GetList(page, limit int) ([]dto.Profile, int, error) {
+//	profiles := make([]dto.Profile, 0)
+//
+//	// get player
+//	players, err := playerDao.GetList(page, limit)
+//	if err != nil {
+//		return profiles, 0, err
+//	}
+//
+//	// get statistics
+//	stats, err := statsDao.GetList(page, limit)
+//	if err != nil {
+//		return profiles, 0, err
+//	}
+//
+//	if len(players) == len(stats) {
+//		for i, player := range players {
+//			profile := dto.Profile{
+//				ID:        player.ID,
+//				Name:      player.Name,
+//				Email:     player.Email,
+//				Point:     stats[i].Point,
+//				TotalGame: stats[i].TotalGame,
+//				WinGame:   stats[i].WinGame,
+//				WinRate:   stats[i].WinRate,
+//			}
+//			profiles = append(profiles, profile)
+//		}
+//	}
+//
+//	totalDoc := playerDao.CountAllPlayer()
+//
+//	return profiles, totalDoc, nil
+//}
 
-	// get player
-	players, err := playerDao.GetList(page, limit)
+// GetListProfile ...
+func (p Player) GetListProfile(paging *util.Paging) ([]dto.Profile, error) {
+	profilesJSON := make([]dto.Profile, 0)
+
+	// get profile
+	profilesBSON, err := playerDao.GetListProfile(paging)
 	if err != nil {
-		return profiles, 0, err
+		return nil, err
 	}
 
-	// get statistics
-	stats, err := statsDao.GetList(page, limit)
-	if err != nil {
-		return profiles, 0, err
-	}
-
-	if len(players) == len(stats) {
-		for i, player := range players {
-			profile := dto.Profile{
-				ID:        player.ID,
-				Name:      player.Name,
-				Email:     player.Email,
-				Point:     stats[i].Point,
-				TotalGame: stats[i].TotalGame,
-				WinGame:   stats[i].WinGame,
-				WinRate:   stats[i].WinRate,
-			}
-			profiles = append(profiles, profile)
+	for _, profileBSON := range profilesBSON {
+		profileJSON := dto.Profile{
+			ID:        profileBSON.ID,
+			Name:      profileBSON.Name,
+			Email:     profileBSON.Email,
+			Point:     profileBSON.Stat.Point,
+			TotalGame: profileBSON.Stat.TotalGame,
+			WinGame:   profileBSON.Stat.WinGame,
+			WinRate:   profileBSON.Stat.WinRate,
 		}
+		profilesJSON = append(profilesJSON, profileJSON)
 	}
 
-	totalDoc := playerDao.CountAllPlayer()
-
-	return profiles, totalDoc, nil
+	return profilesJSON, nil
 }
 
 // DeleteByID ...
@@ -179,3 +216,13 @@ func (p Player) DeleteAll() error {
 
 	return nil
 }
+
+//// Test ...
+//func (p Player) Test() error {
+//	// delete in player collection
+//	if err := playerDao.GetListAggregate(); err != nil {
+//		return err
+//	}
+//
+//	return nil
+//}

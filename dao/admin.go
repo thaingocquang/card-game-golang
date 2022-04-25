@@ -11,7 +11,7 @@ import (
 type Admin struct{}
 
 // Create ...
-func (a Admin) Create() {
+func (Admin) Create() {
 	var adminCol = database.AdminCol()
 
 	count, _ := adminCol.CountDocuments(context.Background(), bson.D{})
@@ -27,7 +27,7 @@ func (a Admin) Create() {
 }
 
 // FindByUsername ...
-func (a Admin) FindByUsername(username string) (model.Admin, error) {
+func (Admin) FindByUsername(username string) (model.Admin, error) {
 	var (
 		adminCol = database.AdminCol()
 		admin    model.Admin

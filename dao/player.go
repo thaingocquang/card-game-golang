@@ -3,17 +3,19 @@ package dao
 import (
 	"card-game-golang/model"
 	"card-game-golang/module/database"
+	"card-game-golang/util"
 	"context"
 	"fmt"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 type Player struct{}
 
 // Create ...
-func (p Player) Create(player model.Player) error {
+func (Player) Create(player model.Player) error {
 	var playerCol = database.PlayerCol()
 
 	// InsertOne
@@ -25,7 +27,7 @@ func (p Player) Create(player model.Player) error {
 }
 
 // FindByID ...
-func (p Player) FindByID(ID primitive.ObjectID) (model.Player, error) {
+func (Player) FindByID(ID primitive.ObjectID) (model.Player, error) {
 	var (
 		playerCol = database.PlayerCol()
 		player    model.Player
@@ -43,7 +45,7 @@ func (p Player) FindByID(ID primitive.ObjectID) (model.Player, error) {
 }
 
 // FindByEmail ...
-func (p Player) FindByEmail(email string) (model.Player, error) {
+func (Player) FindByEmail(email string) (model.Player, error) {
 	var (
 		playerCol = database.PlayerCol()
 		player    model.Player
@@ -61,7 +63,7 @@ func (p Player) FindByEmail(email string) (model.Player, error) {
 }
 
 // Update ...
-func (p Player) Update(ID primitive.ObjectID, player model.Player) error {
+func (Player) Update(ID primitive.ObjectID, player model.Player) error {
 	var playerCol = database.PlayerCol()
 
 	// UpdateOne
@@ -73,7 +75,7 @@ func (p Player) Update(ID primitive.ObjectID, player model.Player) error {
 }
 
 // DeleteByID ...
-func (p Player) DeleteByID(ID primitive.ObjectID) error {
+func (Player) DeleteByID(ID primitive.ObjectID) error {
 	var playerCol = database.PlayerCol()
 
 	// filter
@@ -95,7 +97,7 @@ func (p Player) DeleteByID(ID primitive.ObjectID) error {
 }
 
 // DeleteAll ...
-func (p Player) DeleteAll() error {
+func (Player) DeleteAll() error {
 	var playerCol = database.PlayerCol()
 
 	// DeleteMany
@@ -107,7 +109,7 @@ func (p Player) DeleteAll() error {
 }
 
 // GetList ...
-func (p Player) GetList(page, limit int) ([]model.Player, error) {
+func (Player) GetList(page, limit int) ([]model.Player, error) {
 	var (
 		playerCol = database.PlayerCol()
 		players   []model.Player
@@ -136,7 +138,45 @@ func (p Player) GetList(page, limit int) ([]model.Player, error) {
 	return players, nil
 }
 
-func (p Player) IsEmailExisted(email string) (bool, error) {
+// GetListProfile ...
+func (Player) GetListProfile(paging *util.Paging) ([]model.Profile, error) {
+	var (
+		playerCol = database.PlayerCol()
+		profiles  []model.Profile
+	)
+
+	//// options
+	//opts := new(options.AggregateOptions)
+	//opts.
+	//	SetSkip(int64((paging.Page - 1) * paging.Limit))
+	//opts.SetLimit(int64(paging.Limit))
+
+	// count document in playerCol
+	count, err := playerCol.CountDocuments(context.Background(), bson.D{})
+	if err != nil {
+		return nil, err
+	}
+
+	// set paging total
+	paging.Total = count
+
+	// stage
+	lookupStage := bson.D{{"$lookup", bson.D{{"from", "stats"}, {"localField", "_id"}, {"foreignField", "playerID"}, {"as", "stat"}}}}
+	unwindStage := bson.D{{"$unwind", bson.D{{"path", "$stat"}, {"preserveNullAndEmptyArrays", false}}}}
+	skipStage := bson.D{{"$skip", int64((paging.Page - 1) * paging.Limit)}}
+	limitStage := bson.D{{"$limit", paging.Limit}}
+
+	// aggregate
+	cursor, err := playerCol.Aggregate(context.Background(), mongo.Pipeline{lookupStage, unwindStage, skipStage, limitStage})
+
+	if err = cursor.All(context.Background(), &profiles); err != nil {
+		return nil, err
+	}
+
+	return profiles, nil
+}
+
+func (Player) IsEmailExisted(email string) (bool, error) {
 	var playerCol = database.PlayerCol()
 
 	// filter
@@ -152,7 +192,7 @@ func (p Player) IsEmailExisted(email string) (bool, error) {
 }
 
 // CountAllPlayer ...
-func (g Player) CountAllPlayer() int {
+func (Player) CountAllPlayer() int {
 	var (
 		playerCol = database.PlayerCol()
 		ctx       = context.Background()

@@ -4,7 +4,6 @@ import (
 	"card-game-golang/dto"
 	"card-game-golang/util"
 	"github.com/labstack/echo/v4"
-	"strconv"
 )
 
 // Bot ...
@@ -38,27 +37,43 @@ func (b Bot) GetByID(c echo.Context) error {
 	return util.Response200(c, bot, "")
 }
 
+//// GetList ...
+//func (b Bot) GetList(c echo.Context) error {
+//	page, _ := strconv.Atoi(c.QueryParam("page"))
+//	limit, _ := strconv.Atoi(c.QueryParam("limit"))
+//
+//	// process
+//	bots, totalDocs, err := botService.GetList(page, limit)
+//	if err != nil {
+//		return util.Response400(c, nil, err.Error())
+//	}
+//
+//	data := map[string]interface{}{
+//		"list": bots,
+//		"paginationInfo": map[string]interface{}{
+//			"page":  page,
+//			"limit": limit,
+//			"total": totalDocs,
+//		},
+//	}
+//
+//	return util.Response200(c, data, "")
+//}
+
 // GetList ...
 func (b Bot) GetList(c echo.Context) error {
-	page, _ := strconv.Atoi(c.QueryParam("page"))
-	limit, _ := strconv.Atoi(c.QueryParam("limit"))
+	paging := c.Get("paging").(util.Paging)
+
+	// fulfill
+	paging.Fulfill()
 
 	// process
-	bots, totalDocs, err := botService.GetList(page, limit)
+	bots, err := botService.GetList(&paging)
 	if err != nil {
 		return util.Response400(c, nil, err.Error())
 	}
 
-	data := map[string]interface{}{
-		"list": bots,
-		"paginationInfo": map[string]interface{}{
-			"page":  page,
-			"limit": limit,
-			"total": totalDocs,
-		},
-	}
-
-	return util.Response200(c, data, "")
+	return util.Response200Paging(c, bots, paging, "")
 }
 
 // UpdateByID ...

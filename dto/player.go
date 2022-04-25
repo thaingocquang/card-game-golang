@@ -22,9 +22,10 @@ type (
 
 	// PlayerUpdate ...
 	PlayerUpdate struct {
-		Name     string `json:"name,omitempty"`
-		Email    string `json:"email,omitempty"`
-		Password string `json:"password,omitempty"`
+		Name        string `json:"name,omitempty"`
+		Email       string `json:"email,omitempty"`
+		Password    string `json:"password,omitempty"`
+		NewPassword string `json:"newPassword,omitempty"`
 	}
 
 	// Profile ...
@@ -32,6 +33,18 @@ type (
 		ID        primitive.ObjectID `json:"id"`
 		Name      string             `json:"name"`
 		Email     string             `json:"email"`
+		Point     int                `json:"point"`
+		TotalGame int                `json:"totalGame"`
+		WinGame   int                `json:"winGame"`
+		WinRate   float32            `json:"winRate"`
+	}
+
+	// MyProfile ...
+	MyProfile struct {
+		ID        primitive.ObjectID `json:"id"`
+		Name      string             `json:"name"`
+		Email     string             `json:"email"`
+		Password  string             `json:"password"`
 		Point     int                `json:"point"`
 		TotalGame int                `json:"totalGame"`
 		WinGame   int                `json:"winGame"`

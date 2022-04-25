@@ -16,12 +16,28 @@ func generateResponse(data interface{}, message string) Response {
 	}
 }
 
+func generateResponsePaging(data, paging interface{}, message string) Response {
+	return Response{
+		"data":           data,
+		"paginationInfo": paging,
+		"message":        message,
+	}
+}
+
 // Response200 success ...
 func Response200(c echo.Context, data interface{}, message string) error {
 	if message == "" {
 		message = "success"
 	}
 	return c.JSON(http.StatusOK, generateResponse(data, message))
+}
+
+// Response200Paging success with paging ...
+func Response200Paging(c echo.Context, data, paging interface{}, message string) error {
+	if message == "" {
+		message = "success"
+	}
+	return c.JSON(http.StatusOK, generateResponsePaging(data, paging, message))
 }
 
 // Response400 bad request ...

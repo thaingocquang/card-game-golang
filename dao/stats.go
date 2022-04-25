@@ -14,7 +14,7 @@ import (
 type Stats struct{}
 
 // FindByID ...
-func (s Stats) FindByID(ID primitive.ObjectID) (model.Stats, error) {
+func (Stats) FindByID(ID primitive.ObjectID) (model.Stats, error) {
 	var (
 		statsCol = database.StatsCol()
 		stats    model.Stats
@@ -32,7 +32,7 @@ func (s Stats) FindByID(ID primitive.ObjectID) (model.Stats, error) {
 }
 
 // FindByPlayerID ...
-func (s Stats) FindByPlayerID(ID primitive.ObjectID) (model.Stats, error) {
+func (Stats) FindByPlayerID(ID primitive.ObjectID) (model.Stats, error) {
 	var (
 		statsCol = database.StatsCol()
 		stats    model.Stats
@@ -50,7 +50,7 @@ func (s Stats) FindByPlayerID(ID primitive.ObjectID) (model.Stats, error) {
 }
 
 // Create ...
-func (s Stats) Create(playerID primitive.ObjectID) error {
+func (Stats) Create(playerID primitive.ObjectID) error {
 	var statsCol = database.StatsCol()
 
 	// default stats when create player
@@ -74,7 +74,7 @@ func (s Stats) Create(playerID primitive.ObjectID) error {
 }
 
 // DeleteByID ...
-func (s Stats) DeleteByID(playerID primitive.ObjectID) error {
+func (Stats) DeleteByID(playerID primitive.ObjectID) error {
 	var statsCol = database.StatsCol()
 
 	// filter delete by playerID
@@ -89,7 +89,7 @@ func (s Stats) DeleteByID(playerID primitive.ObjectID) error {
 }
 
 // DeleteAll ...
-func (s Stats) DeleteAll() error {
+func (Stats) DeleteAll() error {
 	var statsCol = database.StatsCol()
 
 	// DeleteMany
@@ -101,7 +101,7 @@ func (s Stats) DeleteAll() error {
 }
 
 // GetList ...
-func (s Stats) GetList(page, limit int) ([]model.Stats, error) {
+func (Stats) GetList(page, limit int) ([]model.Stats, error) {
 	var (
 		statsCol = database.StatsCol()
 		stats    = make([]model.Stats, 0)
@@ -131,7 +131,7 @@ func (s Stats) GetList(page, limit int) ([]model.Stats, error) {
 }
 
 // UpdateByID ...
-func (s Stats) UpdateByID(id primitive.ObjectID, stats model.Stats) error {
+func (Stats) UpdateByID(id primitive.ObjectID, stats model.Stats) error {
 	var statsCol = database.StatsCol()
 
 	// UpdateOne
@@ -143,7 +143,7 @@ func (s Stats) UpdateByID(id primitive.ObjectID, stats model.Stats) error {
 }
 
 // UpdateByPlayerID ...
-func (s Stats) UpdateByPlayerID(playerID primitive.ObjectID, stats model.StatsUpdate) error {
+func (Stats) UpdateByPlayerID(playerID primitive.ObjectID, stats model.StatsUpdate) error {
 	var statsCol = database.StatsCol()
 
 	//// UpdateOne
