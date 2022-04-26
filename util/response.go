@@ -8,6 +8,12 @@ import (
 // Response ...
 type Response map[string]interface{}
 
+// ResponseTest ...
+type ResponseTest struct {
+	Data    interface{} `json:"data"`
+	Message string      `json:"message"`
+}
+
 // generateResponse ...
 func generateResponse(data interface{}, message string) Response {
 	return Response{
@@ -62,4 +68,10 @@ func Response404(c echo.Context, data interface{}, message string) error {
 		message = "not found"
 	}
 	return c.JSON(http.StatusNotFound, generateResponse(data, message))
+}
+
+// HTTPError example
+type HTTPError struct {
+	Code    int    `json:"code" example:"400"`
+	Message string `json:"message" example:"status bad request"`
 }

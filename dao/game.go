@@ -7,6 +7,7 @@ import (
 	"context"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
@@ -76,14 +77,27 @@ func (Game) RecentByPlayerID(ID primitive.ObjectID) ([]model.Game, error) {
 		games   []model.Game
 	)
 
-	// options
-	opts := new(options.FindOptions)
-	opts.SetLimit(5)
+	//// options
+	//opts := new(options.FindOptions)
+	//opts.SetLimit(5)
+	//
+	//cursor, err := gameCol.Find(context.Background(), bson.M{"playerID": ID}, opts)
+	//if err != nil {
+	//	return nil, err
+	//}
+	//
+	//if err = cursor.All(context.Background(), &games); err != nil {
+	//	return nil, err
+	//}
+	//
+	//return games, nil
 
-	cursor, err := gameCol.Find(context.Background(), bson.M{"playerID": ID}, opts)
-	if err != nil {
-		return nil, err
-	}
+	// stage
+	sortStage := bson.D{{"$sort", bson.D{{"date", -1}}}}
+	limitStage := bson.D{{"$limit", 5}}
+
+	// aggregate
+	cursor, err := gameCol.Aggregate(context.Background(), mongo.Pipeline{sortStage, limitStage})
 
 	if err = cursor.All(context.Background(), &games); err != nil {
 		return nil, err

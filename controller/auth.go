@@ -9,7 +9,16 @@ import (
 // Auth ...
 type Auth struct{}
 
-// PlayerRegister ...
+// PlayerRegister godoc
+// @Summary      register an account
+// @Description  registering an account
+// @Tags         auth
+// @Accept       json
+// @Produce      json
+// @Param        account  body      dto.Player  true  "register account"
+// @Success      200  {object}  util.ResponseTest
+// @Failure      400  {object}  util.Response
+// @Router       /api/register [post]
 func (a Auth) PlayerRegister(c echo.Context) error {
 	var player = c.Get("body").(dto.Player)
 
@@ -22,7 +31,16 @@ func (a Auth) PlayerRegister(c echo.Context) error {
 	return util.Response200(c, nil, "")
 }
 
-// PlayerLogin ...
+// PlayerLogin godoc
+// @Summary      player login
+// @Description  player login
+// @Tags         auth
+// @Accept       json
+// @Produce      json
+// @Param        account  body      dto.PlayerLogin  true  "login account"
+// @Success      200  {object}  util.Response
+// @Failure      400  {object}  util.Response
+// @Router       /api/login [post]
 func (a Auth) PlayerLogin(c echo.Context) error {
 	var player = c.Get("body").(dto.PlayerLogin)
 
@@ -41,7 +59,16 @@ func (a Auth) PlayerLogin(c echo.Context) error {
 	return util.Response200(c, data, "")
 }
 
-// AdminLogin ...
+// AdminLogin godoc
+// @Summary      admin login
+// @Description  admin login
+// @Tags         auth
+// @Accept       json
+// @Produce      json
+// @Param        account  body      dto.Admin  true  "login account"
+// @Success      200  {object}  util.Response
+// @Failure      400  {object}  util.Response
+// @Router       /admin/login [post]
 func (a Auth) AdminLogin(c echo.Context) error {
 	var admin = c.Get("body").(dto.Admin)
 

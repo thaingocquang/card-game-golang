@@ -156,3 +156,22 @@ func (Bot) CountAllBot() int {
 	}
 	return int(count)
 }
+
+// GetAll ...
+func (Bot) GetAll() ([]model.Bot, error) {
+	var (
+		botCol = database.BotCol()
+		bots   []model.Bot
+	)
+
+	cursor, err := botCol.Find(context.Background(), bson.D{})
+	if err != nil {
+		return nil, err
+	}
+
+	if err = cursor.All(context.Background(), &bots); err != nil {
+		return nil, err
+	}
+
+	return bots, nil
+}

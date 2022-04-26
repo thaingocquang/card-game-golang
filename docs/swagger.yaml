@@ -1,0 +1,123 @@
+basePath: /
+definitions:
+  dto.Admin:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+  dto.Player:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+    type: object
+  dto.PlayerLogin:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+  util.Response:
+    additionalProperties: true
+    type: object
+  util.ResponseTest:
+    properties:
+      data: {}
+      hihi: {}
+      message:
+        type: string
+    type: object
+host: localhost:1323
+info:
+  contact: {}
+  description: This is a Card Game server.
+  license:
+    name: Apache 2.0
+  title: Card Game API
+  version: "1.0"
+paths:
+  /admin/login:
+    post:
+      consumes:
+      - application/json
+      description: admin login
+      parameters:
+      - description: login account
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/dto.Admin'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/util.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/util.Response'
+      summary: admin login
+      tags:
+      - auth
+  /api/login:
+    post:
+      consumes:
+      - application/json
+      description: player login
+      parameters:
+      - description: login account
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/dto.PlayerLogin'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/util.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/util.Response'
+      summary: player login
+      tags:
+      - auth
+  /api/register:
+    post:
+      consumes:
+      - application/json
+      description: registering an account
+      parameters:
+      - description: register account
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/dto.Player'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/util.ResponseTest'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/util.Response'
+      summary: register an account
+      tags:
+      - auth
+swagger: "2.0"
