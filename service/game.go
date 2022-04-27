@@ -189,7 +189,7 @@ func getListBotSatisfyBetVal(gameVal dto.GameVal) ([]model.Bot, error) {
 
 	for _, bot := range bots {
 		if gameVal.BetValue >= bot.MinBet && gameVal.BetValue <= bot.MaxBet {
-			if bot.TotalPoints >= gameVal.BetValue {
+			if bot.RemainPoints >= gameVal.BetValue {
 				validBots = append(validBots, bot)
 			}
 		}
@@ -242,14 +242,14 @@ func (g Game) PlayRandom(gameVal dto.GameVal, myID string) (dto.GameJSON, error)
 
 	botBSON := randomBotInList(validBots)
 
-	// pick bot which have RemainPoints > 0
-	for {
-		if botBSON.RemainPoints > 0 || botBSON.RemainPoints < gameVal.BetValue {
-			break
-		} else {
-			botBSON = randomBotInList(validBots)
-		}
-	}
+	//// pick bot which have RemainPoints > 0
+	//for {
+	//	if botBSON.RemainPoints > 0 || botBSON.RemainPoints < gameVal.BetValue {
+	//		break
+	//	} else {
+	//		botBSON = randomBotInList(validBots)
+	//	}
+	//}
 
 	// init game
 	botHand, playerHand := initGame()
