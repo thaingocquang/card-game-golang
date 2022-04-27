@@ -11,7 +11,7 @@ type (
 		ID           primitive.ObjectID `bson:"_id,omitempty"`
 		Name         string             `bson:"name,omitempty"`
 		TotalPoints  int                `bson:"totalPoints,omitempty"`
-		RemainPoints int                `bson:"remainPoints,omitempty"`
+		RemainPoints int                `bson:"remainPoints"`
 		MinBet       int                `bson:"minBet,omitempty"`
 		MaxBet       int                `bson:"maxBet,omitempty"`
 		CreatedAt    time.Time          `bson:"createdAt,omitempty"`

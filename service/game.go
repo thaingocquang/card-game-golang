@@ -5,6 +5,7 @@ import (
 	"card-game-golang/model"
 	"card-game-golang/util"
 	"errors"
+	"fmt"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"math/rand"
 	"time"
@@ -82,8 +83,9 @@ func recordGame(botId primitive.ObjectID, playerID primitive.ObjectID, botHand d
 
 		// minus bet value to bot
 		botUpdateBSON.RemainPoints = botBSON.RemainPoints - gameVal.BetValue
-		if botUpdateBSON.RemainPoints < 0 {
+		if botUpdateBSON.RemainPoints <= 0 {
 			botUpdateBSON.RemainPoints = 0
+			fmt.Println("hello")
 		}
 	} else {
 		// if bot win
@@ -97,10 +99,12 @@ func recordGame(botId primitive.ObjectID, playerID primitive.ObjectID, botHand d
 
 		// minus bet value to player
 		myStatsUpdateBSON.Point = myStatsBSON.Point - gameVal.BetValue
-		if myStatsUpdateBSON.Point < 0 {
+		if myStatsUpdateBSON.Point <= 0 {
 			myStatsUpdateBSON.Point = 0
 		}
 	}
+
+	fmt.Println(botUpdateBSON)
 
 	// update my stats
 	if err = statsDao.UpdateByPlayerID(playerID, myStatsUpdateBSON); err != nil {
