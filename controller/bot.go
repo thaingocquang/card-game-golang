@@ -9,7 +9,16 @@ import (
 // Bot ...
 type Bot struct{}
 
-// Create ...
+// Create godoc
+// @Summary      create bot
+// @Description  create bot
+// @Tags         bots
+// @Accept       json
+// @Produce      json
+// @Param        account  body      dto.Bot  true  "create bot"
+// @Success      200  {object}  util.Response
+// @Failure      400  {object}  util.Response
+// @Router       /admin/bots [post]
 func (b Bot) Create(c echo.Context) error {
 	var body = c.Get("body").(dto.Bot)
 
@@ -24,7 +33,18 @@ func (b Bot) Create(c echo.Context) error {
 	return util.Response200(c, nil, "")
 }
 
-// GetByID ...
+// GetByID godoc
+// @Summary      get bot by ID
+// @Description  get bot by ID
+// @Tags         bots
+// @Accept       json
+// @Produce      json
+// @param Authorization header string true "Authorization"
+// @Param        id path string true "bot ID"
+// @Success      200  {object}  util.Response
+// @Failure      400  {object}  util.Response
+// @Security     ApiKeyAuth
+// @Router       /admin/bots/{id} [get]
 func (b Bot) GetByID(c echo.Context) error {
 	var id = c.Get("id").(string)
 
@@ -60,7 +80,19 @@ func (b Bot) GetByID(c echo.Context) error {
 //	return util.Response200(c, data, "")
 //}
 
-// GetList ...
+// GetList godoc
+// @Summary      get list bot
+// @Description  get list bot by
+// @Tags         bots
+// @Accept       json
+// @Produce      json
+// @param Authorization header string true "Authorization"
+// @Param        page  query      int     true  "page query"
+// @Param        limit  query      int     true  "limit query"
+// @Success      200  {object}  util.ResponsePaging
+// @Failure      400  {object}  util.Response
+// @Security     ApiKeyAuth
+// @Router       /admin/bots [get]
 func (b Bot) GetList(c echo.Context) error {
 	paging := c.Get("paging").(util.Paging)
 
@@ -76,7 +108,19 @@ func (b Bot) GetList(c echo.Context) error {
 	return util.Response200Paging(c, bots, paging, "")
 }
 
-// UpdateByID ...
+// UpdateByID godoc
+// @Summary      update bot by id
+// @Description  update bot by id
+// @Tags         bots
+// @Accept       json
+// @Produce      json
+// @param Authorization header string true "Authorization"
+// @Param        id path string true "bot ID"
+// @Param        bot  body      dto.Bot  true  "update bot"
+// @Success      200  {object}  util.Response
+// @Failure      400  {object}  util.Response
+// @Security     ApiKeyAuth
+// @Router       /admin/bots/{id} [put]
 func (b Bot) UpdateByID(c echo.Context) error {
 	var id = c.Get("id").(string)
 	var body = c.Get("body").(dto.Bot)
@@ -90,7 +134,18 @@ func (b Bot) UpdateByID(c echo.Context) error {
 	return util.Response200(c, nil, "")
 }
 
-// DeleteByID ...
+// DeleteByID godoc
+// @Summary      delete bot by id
+// @Description  delete bot by id
+// @Tags         bots
+// @Accept       json
+// @Produce      json
+// @param Authorization header string true "Authorization"
+// @Param        id path string true "bot ID"
+// @Success      200  {object}  util.Response
+// @Failure      400  {object}  util.Response
+// @Security     ApiKeyAuth
+// @Router       /admin/bots/{id} [delete]
 func (b Bot) DeleteByID(c echo.Context) error {
 	var id = c.Get("id").(string)
 

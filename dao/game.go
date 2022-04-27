@@ -92,17 +92,4 @@ func (Game) RecentByPlayerID(ID primitive.ObjectID) ([]model.Game, error) {
 	}
 
 	return games, nil
-
-	// stage
-	//sortStage := bson.D{{"$sort", bson.D{{"date", -1}}}}
-	//limitStage := bson.D{{"$limit", 5}}
-	//
-	//// aggregate
-	//cursor, err := gameCol.Aggregate(context.Background(), mongo.Pipeline{sortStage, limitStage})
-	//
-	//if err = cursor.All(context.Background(), &games); err != nil {
-	//	return nil, err
-	//}
-	//
-	//return games, nil
 }

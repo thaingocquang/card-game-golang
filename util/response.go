@@ -5,28 +5,43 @@ import (
 	"net/http"
 )
 
-// Response ...
-type Response map[string]interface{}
+//Response ...
+//type Response map[string]interface{}
 
-// ResponseTest ...
-type ResponseTest struct {
+// Response ...
+type Response struct {
 	Data    interface{} `json:"data"`
 	Message string      `json:"message"`
 }
 
-// generateResponse ...
+// ResponsePaging ...
+type ResponsePaging struct {
+	Data    interface{} `json:"data"`
+	Paging  interface{} `json:"paginationInfo"`
+	Message string      `json:"message"`
+}
+
+// generateResponseTest ...
 func generateResponse(data interface{}, message string) Response {
 	return Response{
-		"data":    data,
-		"message": message,
+		Data:    data,
+		Message: message,
 	}
 }
 
-func generateResponsePaging(data, paging interface{}, message string) Response {
-	return Response{
-		"data":           data,
-		"paginationInfo": paging,
-		"message":        message,
+//// generateResponse ...
+//func generateResponse(data interface{}, message string) Response {
+//	return Response{
+//		"data":    data,
+//		"message": message,
+//	}
+//}
+
+func generateResponsePaging(data, paging interface{}, message string) ResponsePaging {
+	return ResponsePaging{
+		Data:    data,
+		Paging:  paging,
+		Message: message,
 	}
 }
 

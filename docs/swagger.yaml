@@ -7,6 +7,24 @@ definitions:
       username:
         type: string
     type: object
+  dto.Bot:
+    properties:
+      maxBet:
+        type: integer
+      minBet:
+        type: integer
+      name:
+        type: string
+      remainPoints:
+        type: integer
+      totalPoints:
+        type: integer
+    type: object
+  dto.GameVal:
+    properties:
+      betValue:
+        type: integer
+    type: object
   dto.Player:
     properties:
       email:
@@ -23,15 +41,40 @@ definitions:
       password:
         type: string
     type: object
-  util.Response:
-    additionalProperties: true
+  dto.PlayerUpdate:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      newPassword:
+        type: string
+      password:
+        type: string
     type: object
-  util.ResponseTest:
+  dto.ProfileUpdate:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+      point:
+        type: integer
+    type: object
+  util.Response:
     properties:
       data: {}
-      hihi: {}
       message:
         type: string
+    type: object
+  util.ResponsePaging:
+    properties:
+      data: {}
+      message:
+        type: string
+      paginationInfo: {}
     type: object
 host: localhost:1323
 info:
@@ -42,6 +85,195 @@ info:
   title: Card Game API
   version: "1.0"
 paths:
+  /admin/bots:
+    get:
+      consumes:
+      - application/json
+      description: get list bot by
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: page query
+        in: query
+        name: page
+        required: true
+        type: integer
+      - description: limit query
+        in: query
+        name: limit
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/util.ResponsePaging'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/util.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: get list bot
+      tags:
+      - bots
+    post:
+      consumes:
+      - application/json
+      description: create bot
+      parameters:
+      - description: create bot
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/dto.Bot'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/util.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/util.Response'
+      summary: create bot
+      tags:
+      - bots
+  /admin/bots/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: delete bot by id
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: bot ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/util.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/util.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: delete bot by id
+      tags:
+      - bots
+    get:
+      consumes:
+      - application/json
+      description: get bot by ID
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: bot ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/util.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/util.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: get bot by ID
+      tags:
+      - bots
+    put:
+      consumes:
+      - application/json
+      description: update bot by id
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: bot ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: update bot
+        in: body
+        name: bot
+        required: true
+        schema:
+          $ref: '#/definitions/dto.Bot'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/util.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/util.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: update bot by id
+      tags:
+      - bots
+  /admin/games:
+    get:
+      consumes:
+      - application/json
+      description: get list game
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/util.ResponsePaging'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/util.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: get list game
+      tags:
+      - games
   /admin/login:
     post:
       consumes:
@@ -67,7 +299,231 @@ paths:
             $ref: '#/definitions/util.Response'
       summary: admin login
       tags:
-      - auth
+      - auths
+  /admin/profiles:
+    get:
+      consumes:
+      - application/json
+      description: get list player
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/util.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/util.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: get list player
+      tags:
+      - players
+  /admin/profiles/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: delete player by id
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: player ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/util.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/util.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: delete player by id
+      tags:
+      - players
+    get:
+      consumes:
+      - application/json
+      description: get player by id
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: player ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/util.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/util.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: get player by id
+      tags:
+      - players
+    put:
+      consumes:
+      - application/json
+      description: update profile by id
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: player ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: update bot
+        in: body
+        name: profile
+        required: true
+        schema:
+          $ref: '#/definitions/dto.ProfileUpdate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/util.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/util.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: update profile by id
+      tags:
+      - players
+  /api/games:
+    get:
+      consumes:
+      - application/json
+      description: get recent game
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/util.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/util.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: get recent game
+      tags:
+      - games
+    post:
+      consumes:
+      - application/json
+      description: play game random
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: update bot
+        in: body
+        name: bot
+        required: true
+        schema:
+          $ref: '#/definitions/dto.GameVal'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/util.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/util.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: play game random
+      tags:
+      - games
+  /api/games/{id}:
+    post:
+      consumes:
+      - application/json
+      description: play game by id
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: bot ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: update bot
+        in: body
+        name: bot
+        required: true
+        schema:
+          $ref: '#/definitions/dto.GameVal'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/util.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/util.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: play game by id
+      tags:
+      - games
   /api/login:
     post:
       consumes:
@@ -93,7 +549,67 @@ paths:
             $ref: '#/definitions/util.Response'
       summary: player login
       tags:
-      - auth
+      - auths
+  /api/players:
+    put:
+      consumes:
+      - application/json
+      description: update player by id
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: update bot
+        in: body
+        name: bot
+        required: true
+        schema:
+          $ref: '#/definitions/dto.PlayerUpdate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/util.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/util.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: update player by id
+      tags:
+      - players
+  /api/profile:
+    get:
+      consumes:
+      - application/json
+      description: get my profile
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/util.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/util.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: get my profile
+      tags:
+      - players
   /api/register:
     post:
       consumes:
@@ -112,12 +628,12 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/util.ResponseTest'
+            $ref: '#/definitions/util.Response'
         "400":
           description: Bad Request
           schema:
             $ref: '#/definitions/util.Response'
       summary: register an account
       tags:
-      - auth
+      - auths
 swagger: "2.0"

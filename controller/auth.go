@@ -12,11 +12,11 @@ type Auth struct{}
 // PlayerRegister godoc
 // @Summary      register an account
 // @Description  registering an account
-// @Tags         auth
+// @Tags         auths
 // @Accept       json
 // @Produce      json
 // @Param        account  body      dto.Player  true  "register account"
-// @Success      200  {object}  util.ResponseTest
+// @Success      200  {object}  util.Response
 // @Failure      400  {object}  util.Response
 // @Router       /api/register [post]
 func (a Auth) PlayerRegister(c echo.Context) error {
@@ -34,7 +34,7 @@ func (a Auth) PlayerRegister(c echo.Context) error {
 // PlayerLogin godoc
 // @Summary      player login
 // @Description  player login
-// @Tags         auth
+// @Tags         auths
 // @Accept       json
 // @Produce      json
 // @Param        account  body      dto.PlayerLogin  true  "login account"
@@ -62,7 +62,7 @@ func (a Auth) PlayerLogin(c echo.Context) error {
 // AdminLogin godoc
 // @Summary      admin login
 // @Description  admin login
-// @Tags         auth
+// @Tags         auths
 // @Accept       json
 // @Produce      json
 // @Param        account  body      dto.Admin  true  "login account"

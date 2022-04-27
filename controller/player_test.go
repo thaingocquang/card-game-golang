@@ -52,8 +52,8 @@ func (suite *MyProfileSuite) TestMyProfile_Success() {
 
 	// assert
 	json.Unmarshal(rec.Body.Bytes(), &response)
-	assert.NotEqual(suite.T(), nil, response["data"])
-	assert.Equal(suite.T(), "success", response["message"])
+	assert.NotEqual(suite.T(), nil, response.Data)
+	assert.Equal(suite.T(), "success", response.Message)
 }
 
 // TestMyProfile_Fail_TokenInvalid ...
@@ -75,7 +75,7 @@ func (suite *MyProfileSuite) TestMyProfile_Fail_TokenInvalid() {
 
 	// parse
 	json.Unmarshal(rec.Body.Bytes(), &response)
-	assert.Equal(suite.T(), "invalid or expired jwt", response["message"])
+	assert.Equal(suite.T(), "invalid or expired jwt", response.Message)
 }
 
 // TestGetMyProfile_Fail_MissingJWT ...
@@ -92,7 +92,7 @@ func (suite *MyProfileSuite) TestGetMyProfile_Fail_MissingJWT() {
 
 	// parse
 	json.Unmarshal(rec.Body.Bytes(), &response)
-	assert.Equal(suite.T(), "missing or malformed jwt", response["message"])
+	assert.Equal(suite.T(), "missing or malformed jwt", response.Message)
 }
 
 // =============================================================
@@ -149,8 +149,8 @@ func (suite *UpdateMyProfile) TestUpdateMyProfile_Success() {
 
 	// parse
 	json.Unmarshal(rec.Body.Bytes(), &response)
-	assert.Equal(suite.T(), testhelper.PlayerIDString, response["data"])
-	assert.Equal(suite.T(), "success", response["message"])
+	assert.Equal(suite.T(), testhelper.PlayerIDString, response.Data)
+	assert.Equal(suite.T(), "success", response.Message)
 	assert.Equal(suite.T(), body.Name, updatedPlayer.Name)
 }
 

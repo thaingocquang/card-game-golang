@@ -48,8 +48,8 @@ func (suite *RegisterSuite) TestRegister_Success() {
 
 	// assert
 	_ = json.Unmarshal(rec.Body.Bytes(), &response)
-	assert.Equal(suite.T(), nil, response["data"])
-	assert.Equal(suite.T(), "success", response["message"])
+	assert.Equal(suite.T(), nil, response.Data)
+	assert.Equal(suite.T(), "success", response.Message)
 }
 
 // TestRegister_Fail_EmailRequired ...
@@ -74,8 +74,8 @@ func (suite *RegisterSuite) TestRegister_Fail_NameRequired() {
 
 	// assert
 	_ = json.Unmarshal(rec.Body.Bytes(), &response)
-	assert.Equal(suite.T(), nil, response["data"])
-	assert.Equal(suite.T(), "name: cannot be blank.", response["message"])
+	assert.Equal(suite.T(), nil, response.Data)
+	assert.Equal(suite.T(), "name: cannot be blank.", response.Message)
 }
 
 // TestRegister_Fail_EmailRequired ...
@@ -100,8 +100,8 @@ func (suite *RegisterSuite) TestRegister_Fail_EmailRequired() {
 
 	// assert
 	_ = json.Unmarshal(rec.Body.Bytes(), &response)
-	assert.Equal(suite.T(), nil, response["data"])
-	assert.Equal(suite.T(), "email: cannot be blank.", response["message"])
+	assert.Equal(suite.T(), nil, response.Data)
+	assert.Equal(suite.T(), "email: cannot be blank.", response.Message)
 }
 
 // TestRegister_Fail_PasswordRequired ...
@@ -126,8 +126,8 @@ func (suite *RegisterSuite) TestRegister_Fail_PasswordRequired() {
 
 	// assert
 	_ = json.Unmarshal(rec.Body.Bytes(), &response)
-	assert.Equal(suite.T(), nil, response["data"])
-	assert.Equal(suite.T(), "password: cannot be blank.", response["message"])
+	assert.Equal(suite.T(), nil, response.Data)
+	assert.Equal(suite.T(), "password: cannot be blank.", response.Message)
 }
 
 // TestRegister_Fail_EmailExisted ...
@@ -152,8 +152,8 @@ func (suite *RegisterSuite) TestRegister_Fail_EmailExisted() {
 
 	// assert
 	_ = json.Unmarshal(rec.Body.Bytes(), &response)
-	assert.Equal(suite.T(), nil, response["data"])
-	assert.Equal(suite.T(), "email already existed", response["message"])
+	assert.Equal(suite.T(), nil, response.Data)
+	assert.Equal(suite.T(), "email already existed", response.Message)
 }
 
 // TestRegister_Fail_EmailInValid_InvalidPrefix ...
@@ -178,8 +178,8 @@ func (suite *RegisterSuite) TestRegister_Fail_EmailInValid_InvalidPrefix() {
 
 	// assert
 	_ = json.Unmarshal(rec.Body.Bytes(), &response)
-	assert.Equal(suite.T(), nil, response["data"])
-	assert.Equal(suite.T(), "email: must be a valid email address.", response["message"])
+	assert.Equal(suite.T(), nil, response.Data)
+	assert.Equal(suite.T(), "email: must be a valid email address.", response.Message)
 }
 
 // TestRegister_Fail_EmailInValid_InvalidDomain ...
@@ -204,8 +204,8 @@ func (suite *RegisterSuite) TestRegister_Fail_EmailInValid_InvalidDomain() {
 
 	// assert
 	_ = json.Unmarshal(rec.Body.Bytes(), &response)
-	assert.Equal(suite.T(), nil, response["data"])
-	assert.Equal(suite.T(), "email: must be a valid email address.", response["message"])
+	assert.Equal(suite.T(), nil, response.Data)
+	assert.Equal(suite.T(), "email: must be a valid email address.", response.Message)
 }
 
 // ===========================================
@@ -243,7 +243,7 @@ func (suite *LoginSuite) TestLogin_Success() {
 
 	// assert
 	_ = json.Unmarshal(rec.Body.Bytes(), &response)
-	assert.NotEqual(suite.T(), nil, response["data"])
+	assert.NotEqual(suite.T(), nil, response.Data)
 }
 
 // TestLogin_Fail_EmailNotExistInDB ...
@@ -267,8 +267,8 @@ func (suite *LoginSuite) TestLogin_Fail_EmailNotExistInDB() {
 
 	// assert
 	_ = json.Unmarshal(rec.Body.Bytes(), &response)
-	assert.Equal(suite.T(), nil, response["data"])
-	assert.Equal(suite.T(), "email not existed in db", response["message"])
+	assert.Equal(suite.T(), nil, response.Data)
+	assert.Equal(suite.T(), "email not existed in db", response.Message)
 }
 
 // TestLogin_Fail_WrongPassword ...
@@ -292,8 +292,8 @@ func (suite *LoginSuite) TestLogin_Fail_WrongPassword() {
 
 	// assert
 	_ = json.Unmarshal(rec.Body.Bytes(), &response)
-	assert.Equal(suite.T(), nil, response["data"])
-	assert.Equal(suite.T(), "wrong password", response["message"])
+	assert.Equal(suite.T(), nil, response.Data)
+	assert.Equal(suite.T(), "wrong password", response.Message)
 }
 
 // ===========================================
@@ -331,8 +331,8 @@ func (suite *LoginSuite) TestAdminLogin_Success() {
 
 	// assert
 	_ = json.Unmarshal(rec.Body.Bytes(), &response)
-	assert.NotEqual(suite.T(), nil, response["data"])
-	assert.Equal(suite.T(), "success", response["message"])
+	assert.NotEqual(suite.T(), nil, response.Data)
+	assert.Equal(suite.T(), "success", response.Message)
 }
 
 // TestAuth ...

@@ -9,7 +9,17 @@ import (
 // Player ...
 type Player struct{}
 
-// MyProfile ...
+// MyProfile godoc
+// @Summary      get my profile
+// @Description  get my profile
+// @Tags         players
+// @Accept       json
+// @Produce      json
+// @param Authorization header string true "Authorization"
+// @Success      200  {object}  util.Response
+// @Failure      400  {object}  util.Response
+// @Security     ApiKeyAuth
+// @Router       /api/profile [get]
 func (p Player) MyProfile(c echo.Context) error {
 	var id = c.Get("id").(string)
 
@@ -23,7 +33,18 @@ func (p Player) MyProfile(c echo.Context) error {
 	return util.Response200(c, profile, "")
 }
 
-// UpdatePlayer ...
+// UpdatePlayer godoc
+// @Summary      update player by id
+// @Description  update player by id
+// @Tags         players
+// @Accept       json
+// @Produce      json
+// @param Authorization header string true "Authorization"
+// @Param        bot  body      dto.PlayerUpdate  true  "update bot"
+// @Success      200  {object}  util.Response
+// @Failure      400  {object}  util.Response
+// @Security     ApiKeyAuth
+// @Router       /api/players [put]
 func (p Player) UpdatePlayer(c echo.Context) error {
 	// player id & update body
 	var id = c.Get("id").(string)
@@ -45,6 +66,18 @@ func (p Player) UpdateMyPassword(c echo.Context) error {
 	return nil
 }
 
+// GetByID godoc
+// @Summary      get player by id
+// @Description  get player by id
+// @Tags         players
+// @Accept       json
+// @Produce      json
+// @param Authorization header string true "Authorization"
+// @Param        id path string true "player ID"
+// @Success      200  {object}  util.Response
+// @Failure      400  {object}  util.Response
+// @Security     ApiKeyAuth
+// @Router       /admin/profiles/{id} [get]
 func (p Player) GetByID(c echo.Context) error {
 	var id = c.Get("id").(string)
 
@@ -58,7 +91,17 @@ func (p Player) GetByID(c echo.Context) error {
 	return util.Response200(c, profile, "")
 }
 
-// GetListProfile ...
+// GetListProfile godoc
+// @Summary      get list player
+// @Description  get list player
+// @Tags         players
+// @Accept       json
+// @Produce      json
+// @param Authorization header string true "Authorization"
+// @Success      200  {object}  util.Response
+// @Failure      400  {object}  util.Response
+// @Security     ApiKeyAuth
+// @Router       /admin/profiles [get]
 func (p Player) GetListProfile(c echo.Context) error {
 	paging := c.Get("paging").(util.Paging)
 
@@ -75,7 +118,19 @@ func (p Player) GetListProfile(c echo.Context) error {
 	return util.Response200Paging(c, profiles, paging, "")
 }
 
-// UpdateProfileByID ...
+// UpdateProfileByID godoc
+// @Summary      update profile by id
+// @Description  update profile by id
+// @Tags         players
+// @Accept       json
+// @Produce      json
+// @param Authorization header string true "Authorization"
+// @Param        id path string true "player ID"
+// @Param        profile  body      dto.ProfileUpdate  true  "update bot"
+// @Success      200  {object}  util.Response
+// @Failure      400  {object}  util.Response
+// @Security     ApiKeyAuth
+// @Router       /admin/profiles/{id} [put]
 func (p Player) UpdateProfileByID(c echo.Context) error {
 	// player id & update body
 	var id = c.Get("id").(string)
@@ -92,7 +147,18 @@ func (p Player) UpdateProfileByID(c echo.Context) error {
 	return util.Response200(c, id, "")
 }
 
-// DeleteByID ...
+// DeleteByID godoc
+// @Summary      delete player by id
+// @Description  delete player by id
+// @Tags         players
+// @Accept       json
+// @Produce      json
+// @param Authorization header string true "Authorization"
+// @Param        id path string true "player ID"
+// @Success      200  {object}  util.Response
+// @Failure      400  {object}  util.Response
+// @Security     ApiKeyAuth
+// @Router       /admin/profiles/{id} [delete]
 func (p Player) DeleteByID(c echo.Context) error {
 	var id = c.Get("id").(string)
 

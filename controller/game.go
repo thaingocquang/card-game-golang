@@ -3,14 +3,25 @@ package controller
 import (
 	"card-game-golang/dto"
 	"card-game-golang/util"
-	"fmt"
 	"github.com/labstack/echo/v4"
 )
 
 // Game ...
 type Game struct{}
 
-// PlayByBotID ...
+// PlayByBotID godoc
+// @Summary      play game by id
+// @Description  play game by id
+// @Tags         games
+// @Accept       json
+// @Produce      json
+// @param Authorization header string true "Authorization"
+// @Param        id path string true "bot ID"
+// @Param        bot  body      dto.GameVal  true  "update bot"
+// @Success      200  {object}  util.Response
+// @Failure      400  {object}  util.Response
+// @Security     ApiKeyAuth
+// @Router       /api/games/{id} [post]
 func (g Game) PlayByBotID(c echo.Context) error {
 	var botID = c.Get("id").(string)
 	var body = c.Get("body").(dto.GameVal)
@@ -28,7 +39,18 @@ func (g Game) PlayByBotID(c echo.Context) error {
 	return util.Response200(c, gameJSON, "")
 }
 
-// PlayRandom ...
+// PlayRandom godoc
+// @Summary      play game random
+// @Description  play game random
+// @Tags         games
+// @Accept       json
+// @Produce      json
+// @param Authorization header string true "Authorization"
+// @Param        bot  body      dto.GameVal  true  "update bot"
+// @Success      200  {object}  util.Response
+// @Failure      400  {object}  util.Response
+// @Security     ApiKeyAuth
+// @Router       /api/games [post]
 func (g Game) PlayRandom(c echo.Context) error {
 	var body = c.Get("body").(dto.GameVal)
 
@@ -45,7 +67,17 @@ func (g Game) PlayRandom(c echo.Context) error {
 	return util.Response200(c, gameBSON, "")
 }
 
-// RecentGame ...
+// RecentGame godoc
+// @Summary      get recent game
+// @Description  get recent game
+// @Tags         games
+// @Accept       json
+// @Produce      json
+// @param Authorization header string true "Authorization"
+// @Success      200  {object}  util.Response
+// @Failure      400  {object}  util.Response
+// @Security     ApiKeyAuth
+// @Router       /api/games [get]
 func (g Game) RecentGame(c echo.Context) error {
 	var id = c.Get("id").(string)
 
@@ -58,17 +90,28 @@ func (g Game) RecentGame(c echo.Context) error {
 	return util.Response200(c, recentGames, "")
 }
 
-// GetList ...
+// GetList godoc
+// @Summary      get list game
+// @Description  get list game
+// @Tags         games
+// @Accept       json
+// @Produce      json
+// @param Authorization header string true "Authorization"
+// @Success      200  {object}  util.ResponsePaging
+// @Failure      400  {object}  util.Response
+// @Security     ApiKeyAuth
+// @Router       /admin/games [get]
 func (g Game) GetList(c echo.Context) error {
 	paging := c.Get("paging").(util.Paging)
+
+	// fulfill
+	paging.Fulfill()
 
 	// process
 	games, err := gameService.GetList(&paging)
 	if err != nil {
 		return util.Response400(c, nil, err.Error())
 	}
-
-	fmt.Println(games)
 
 	return util.Response200Paging(c, games, paging, "")
 }
