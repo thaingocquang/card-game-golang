@@ -67,9 +67,9 @@ func recordGame(botId primitive.ObjectID, playerID primitive.ObjectID, botHand d
 	if playerHand.CompareHandIsHigher(botHand) {
 		// if player win
 		gameBSON.WinnerID = playerID
-		gameBSON.WinnerName = botBSON.Name
+		gameBSON.WinnerName = player.Name
 		gameJSON.WinnerID = playerID
-		gameJSON.WinnerName = botBSON.Name
+		gameJSON.WinnerName = player.Name
 
 		// increase player winGame by 1
 		myStatsUpdateBSON.WinGame = myStatsBSON.WinGame + 1
@@ -88,9 +88,9 @@ func recordGame(botId primitive.ObjectID, playerID primitive.ObjectID, botHand d
 	} else {
 		// if bot win
 		gameBSON.WinnerID = botId
-		gameBSON.WinnerName = player.Name
+		gameBSON.WinnerName = botBSON.Name
 		gameJSON.WinnerID = botId
-		gameJSON.WinnerName = player.Name
+		gameJSON.WinnerName = botBSON.Name
 
 		// add bet value to bot
 		botUpdateBSON.RemainPoints = botBSON.RemainPoints + gameVal.BetValue
@@ -146,13 +146,21 @@ func recordGame(botId primitive.ObjectID, playerID primitive.ObjectID, botHand d
 
 // PlayByBotID ...
 func (g Game) PlayByBotID(gameVal dto.GameVal, botID string, myID string) (dto.GameJSON, error) {
-
-	// init game
-	botHand, playerHand := initGame()
-
 	// convert id to objectID
 	myObjID, _ := primitive.ObjectIDFromHex(myID)
 	botObjID, _ := primitive.ObjectIDFromHex(botID)
+
+	// check bet value
+	botBSON, err := botDao.FindByID(botObjID)
+	if err != nil {
+		return dto.GameJSON{}, err
+	}
+	if gameVal.BetValue > botBSON.MaxBet || gameVal.BetValue < botBSON.MinBet {
+		return dto.GameJSON{}, errors.New("bet value not satisfy")
+	}
+
+	// init game
+	botHand, playerHand := initGame()
 
 	// record game
 	gameJSON, err := recordGame(botObjID, myObjID, botHand, playerHand, gameVal)
