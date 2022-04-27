@@ -217,6 +217,14 @@ func randomBotInList(validBots []model.Bot) model.Bot {
 func (g Game) PlayRandom(gameVal dto.GameVal, myID string) (dto.GameJSON, error) {
 	gameJSON := dto.GameJSON{}
 
+	// convert id to objectID
+	myObjID, _ := primitive.ObjectIDFromHex(myID)
+
+	myStats, err := statsDao.FindByPlayerID(myObjID)
+	if err != nil {
+		return dto.GameJSON{}, err
+	}
+
 	validBots, err := getListBotSatisfyBetVal(gameVal)
 	if err != nil {
 		return gameJSON, err
@@ -229,14 +237,28 @@ func (g Game) PlayRandom(gameVal dto.GameVal, myID string) (dto.GameJSON, error)
 		}
 		minBetInList := 999999
 		maxBetInList := 0
+		//for _, v := range botBSONs {
+		//	if minBetInList > v.MinBet {
+		//		minBetInList = v.MinBet
+		//	}
+		//	if maxBetInList < v.MaxBet {
+		//		maxBetInList = v.MaxBet
+		//	}
+		//}
+
 		for _, v := range botBSONs {
-			if minBetInList > v.MinBet {
-				minBetInList = v.MinBet
-			}
-			if maxBetInList < v.MaxBet {
-				maxBetInList = v.MaxBet
+			if v.RemainPoints > v.MinBet {
+				if myStats.Point > v.MinBet {
+					if minBetInList > v.MinBet {
+						minBetInList = v.MinBet
+					}
+					if maxBetInList < v.MaxBet {
+						maxBetInList = v.MaxBet
+					}
+				}
 			}
 		}
+
 		return gameJSON, errors.New("Không có bot nào thỏa mãn giá trị cược, bạn có thể cược trong khoảng " + strconv.Itoa(minBetInList) + " đến " + strconv.Itoa(maxBetInList))
 	}
 
@@ -253,9 +275,6 @@ func (g Game) PlayRandom(gameVal dto.GameVal, myID string) (dto.GameJSON, error)
 
 	// init game
 	botHand, playerHand := initGame()
-
-	// convert id to objectID
-	myObjID, _ := primitive.ObjectIDFromHex(myID)
 
 	gameJSON, err = recordGame(botBSON.ID, myObjID, botHand, playerHand, gameVal)
 	if err != nil {
