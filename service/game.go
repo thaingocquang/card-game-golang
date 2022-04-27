@@ -245,21 +245,25 @@ func (g Game) PlayRandom(gameVal dto.GameVal, myID string) (dto.GameJSON, error)
 		//		maxBetInList = v.MaxBet
 		//	}
 		//}
-
-		for _, v := range botBSONs {
-			if v.RemainPoints > v.MinBet {
-				if myStats.Point > v.MinBet {
-					if minBetInList > v.MinBet {
-						minBetInList = v.MinBet
-					}
-					if maxBetInList < v.MaxBet {
-						maxBetInList = v.MaxBet
-					}
+		for _, bot := range botBSONs {
+			if bot.RemainPoints >= bot.MaxBet && myStats.Point >= bot.MaxBet {
+				if maxBetInList < bot.MaxBet {
+					maxBetInList = bot.MaxBet
+				}
+			}
+			if bot.RemainPoints >= bot.MinBet && myStats.Point >= bot.MinBet {
+				if minBetInList > bot.MinBet {
+					minBetInList = bot.MinBet
 				}
 			}
 		}
 
-		return gameJSON, errors.New("Không có bot nào thỏa mãn giá trị cược, bạn có thể cược trong khoảng " + strconv.Itoa(minBetInList) + " đến " + strconv.Itoa(maxBetInList))
+		if minBetInList != 999999 || maxBetInList != 0 {
+			return gameJSON, errors.New("Không có bot nào thỏa mãn giá trị cược, bạn có thể cược trong khoảng " + strconv.Itoa(minBetInList) + " đến " + strconv.Itoa(maxBetInList))
+		} else {
+			return gameJSON, errors.New("Không có bot nào thỏa mãn giá trị cược.")
+		}
+
 	}
 
 	botBSON := randomBotInList(validBots)
