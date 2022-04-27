@@ -85,6 +85,18 @@ func (c Card) CompareSuit(c1 Card) bool {
 // SumRank ...
 func (h Hand) SumRank() int {
 	sumRank := 0
+
+	baTien := true
+	for _, c := range h.Cards {
+		if c.Rank < 11 || c.Rank == 14 {
+			baTien = false
+		}
+	}
+
+	if baTien == true {
+		return 999
+	}
+
 	for _, c := range h.Cards {
 		if c.Rank == 14 {
 			sumRank += 1

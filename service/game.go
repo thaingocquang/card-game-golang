@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"math/rand"
+	"strconv"
 	"time"
 )
 
@@ -176,7 +177,7 @@ func (g Game) PlayByBotID(gameVal dto.GameVal, botID string, myID string) (dto.G
 }
 
 // getListBotSatisfyBotVal ...
-func getListBotSatisfyBotVal(gameVal dto.GameVal) ([]model.Bot, error) {
+func getListBotSatisfyBetVal(gameVal dto.GameVal) ([]model.Bot, error) {
 	// filter bot have totalPoint > betValue & in range (minBet, maxBet)
 	validBots := make([]model.Bot, 0)
 
@@ -212,20 +213,43 @@ func randomBotInList(validBots []model.Bot) model.Bot {
 	return botBSON
 }
 
+// PlayRandom ...
 func (g Game) PlayRandom(gameVal dto.GameVal, myID string) (dto.GameJSON, error) {
 	gameJSON := dto.GameJSON{}
 
-	validBots, err := getListBotSatisfyBotVal(gameVal)
+	validBots, err := getListBotSatisfyBetVal(gameVal)
 	if err != nil {
 		return gameJSON, err
 	}
 
 	if len(validBots) == 0 {
-		return gameJSON, errors.New("no bot satisfy betValue")
+		botBSONs, err := botDao.GetAll()
+		if err != nil {
+			return dto.GameJSON{}, err
+		}
+		minBetInList := 999999
+		maxBetInList := 0
+		for _, v := range botBSONs {
+			if minBetInList > v.MinBet {
+				minBetInList = v.MinBet
+			}
+			if maxBetInList < v.MaxBet {
+				maxBetInList = v.MaxBet
+			}
+		}
+		return gameJSON, errors.New("Không có bot nào thỏa mãn giá trị cược, bạn có thể cược trong khoảng " + strconv.Itoa(minBetInList) + " đến " + strconv.Itoa(maxBetInList))
 	}
 
-	//
 	botBSON := randomBotInList(validBots)
+
+	// pick bot which have RemainPoints > 0
+	for {
+		if botBSON.RemainPoints > 0 || botBSON.RemainPoints < gameVal.BetValue {
+			break
+		} else {
+			botBSON = randomBotInList(validBots)
+		}
+	}
 
 	// init game
 	botHand, playerHand := initGame()
