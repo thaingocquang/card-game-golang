@@ -13,6 +13,7 @@ type (
 		PlayerID   primitive.ObjectID `bson:"playerID"`
 		BotID      primitive.ObjectID `bson:"botID"`
 		WinnerID   primitive.ObjectID `bson:"winnerID"`
+		WinnerName string             `bson:"winnerName"`
 		PlayerHand Hand               `bson:"playerHand"`
 		BotHand    Hand               `bson:"botHand"`
 		BetValue   int                `bson:"betValue"`

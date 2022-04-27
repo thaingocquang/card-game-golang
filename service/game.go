@@ -41,6 +41,12 @@ func recordGame(botId primitive.ObjectID, playerID primitive.ObjectID, botHand d
 	gameBSON := model.Game{}
 	gameJSON := dto.GameJSON{}
 
+	// get player
+	player, err := playerDao.FindByID(playerID)
+	if err != nil {
+		return gameJSON, err
+	}
+
 	myStatsBSON, err := statsDao.FindByPlayerID(playerID)
 	if err != nil {
 		return gameJSON, err
@@ -61,7 +67,9 @@ func recordGame(botId primitive.ObjectID, playerID primitive.ObjectID, botHand d
 	if playerHand.CompareHandIsHigher(botHand) {
 		// if player win
 		gameBSON.WinnerID = playerID
+		gameBSON.WinnerName = botBSON.Name
 		gameJSON.WinnerID = playerID
+		gameJSON.WinnerName = botBSON.Name
 
 		// increase player winGame by 1
 		myStatsUpdateBSON.WinGame = myStatsBSON.WinGame + 1
@@ -80,7 +88,9 @@ func recordGame(botId primitive.ObjectID, playerID primitive.ObjectID, botHand d
 	} else {
 		// if bot win
 		gameBSON.WinnerID = botId
+		gameBSON.WinnerName = player.Name
 		gameJSON.WinnerID = botId
+		gameJSON.WinnerName = player.Name
 
 		// add bet value to bot
 		botUpdateBSON.RemainPoints = botBSON.RemainPoints + gameVal.BetValue
@@ -328,6 +338,7 @@ func (g Game) Recent(ID string) ([]dto.GameJSON, error) {
 			PlayerID:   game.PlayerID,
 			BotID:      game.BotID,
 			WinnerID:   game.WinnerID,
+			WinnerName: game.WinnerName,
 			PlayerHand: playerHandJSON,
 			BotHand:    botHandJSON,
 			BetValue:   game.BetValue,

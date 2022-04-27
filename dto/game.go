@@ -21,6 +21,7 @@ type (
 		PlayerID   primitive.ObjectID `json:"playerID"`
 		BotID      primitive.ObjectID `json:"botID"`
 		WinnerID   primitive.ObjectID `json:"winnerID"`
+		WinnerName string             `json:"winnerName"`
 		PlayerHand Hand               `json:"playerHand"`
 		BotHand    Hand               `json:"botHand"`
 		BetValue   int                `json:"betValue"`
