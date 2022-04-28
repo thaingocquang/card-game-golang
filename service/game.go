@@ -246,9 +246,17 @@ func (g Game) PlayRandom(gameVal dto.GameVal, myID string) (dto.GameJSON, error)
 		//	}
 		//}
 		for _, bot := range botBSONs {
-			if bot.RemainPoints >= bot.MaxBet && myStats.Point >= bot.MaxBet {
-				if maxBetInList < bot.MaxBet {
-					maxBetInList = bot.MaxBet
+			if bot.RemainPoints >= bot.MaxBet {
+				if myStats.Point >= bot.MaxBet {
+					if maxBetInList < bot.MaxBet {
+						maxBetInList = bot.MaxBet
+					}
+				}
+			} else {
+				if myStats.Point >= bot.MinBet {
+					if maxBetInList < bot.RemainPoints {
+						maxBetInList = bot.RemainPoints
+					}
 				}
 			}
 			if bot.RemainPoints >= bot.MinBet && myStats.Point >= bot.MinBet {

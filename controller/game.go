@@ -11,7 +11,7 @@ type Game struct{}
 
 // PlayByBotID godoc
 // @Summary      play game by id
-// @Description  play game by id
+// @Description  player play game by id
 // @Tags         games
 // @Accept       json
 // @Produce      json
@@ -41,7 +41,7 @@ func (g Game) PlayByBotID(c echo.Context) error {
 
 // PlayRandom godoc
 // @Summary      play game random
-// @Description  play game random
+// @Description  player play game random
 // @Tags         games
 // @Accept       json
 // @Produce      json
@@ -69,7 +69,7 @@ func (g Game) PlayRandom(c echo.Context) error {
 
 // RecentGame godoc
 // @Summary      get recent game
-// @Description  get recent game
+// @Description  player get recent game
 // @Tags         games
 // @Accept       json
 // @Produce      json
@@ -92,7 +92,7 @@ func (g Game) RecentGame(c echo.Context) error {
 
 // GetList godoc
 // @Summary      get list game
-// @Description  get list game
+// @Description  admin get list game
 // @Tags         games
 // @Accept       json
 // @Produce      json

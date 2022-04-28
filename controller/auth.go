@@ -11,7 +11,7 @@ type Auth struct{}
 
 // PlayerRegister godoc
 // @Summary      register an account
-// @Description  registering an account
+// @Description  player registering an account
 // @Tags         auths
 // @Accept       json
 // @Produce      json

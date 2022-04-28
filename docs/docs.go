@@ -89,6 +89,13 @@ const docTemplate = `{
                 "summary": "create bot",
                 "parameters": [
                     {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
                         "description": "create bot",
                         "name": "account",
                         "in": "body",
@@ -839,7 +846,7 @@ const docTemplate = `{
         },
         "/api/register": {
             "post": {
-                "description": "registering an account",
+                "description": "player registering an account",
                 "consumes": [
                     "application/json"
                 ],

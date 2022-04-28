@@ -11,7 +11,7 @@ type Player struct{}
 
 // MyProfile godoc
 // @Summary      get my profile
-// @Description  get my profile
+// @Description  player get my profile
 // @Tags         players
 // @Accept       json
 // @Produce      json
@@ -35,7 +35,7 @@ func (p Player) MyProfile(c echo.Context) error {
 
 // UpdatePlayer godoc
 // @Summary      update player by id
-// @Description  update player by id
+// @Description  player update player by id
 // @Tags         players
 // @Accept       json
 // @Produce      json
@@ -68,7 +68,7 @@ func (p Player) UpdateMyPassword(c echo.Context) error {
 
 // GetByID godoc
 // @Summary      get player by id
-// @Description  get player by id
+// @Description  admin get player by id
 // @Tags         players
 // @Accept       json
 // @Produce      json
@@ -93,7 +93,7 @@ func (p Player) GetByID(c echo.Context) error {
 
 // GetListProfile godoc
 // @Summary      get list player
-// @Description  get list player
+// @Description  admin get list player
 // @Tags         players
 // @Accept       json
 // @Produce      json
@@ -120,7 +120,7 @@ func (p Player) GetListProfile(c echo.Context) error {
 
 // UpdateProfileByID godoc
 // @Summary      update profile by id
-// @Description  update profile by id
+// @Description  admin update profile by id
 // @Tags         players
 // @Accept       json
 // @Produce      json
@@ -149,7 +149,7 @@ func (p Player) UpdateProfileByID(c echo.Context) error {
 
 // DeleteByID godoc
 // @Summary      delete player by id
-// @Description  delete player by id
+// @Description  admin delete player by id
 // @Tags         players
 // @Accept       json
 // @Produce      json
@@ -183,15 +183,3 @@ func (p Player) DeleteAll(c echo.Context) error {
 	// success
 	return util.Response200(c, nil, "")
 }
-
-//// Test ...
-//func (p Player) Test(c echo.Context) error {
-//	// process
-//	err := playerService.Test()
-//	if err != nil {
-//		return util.Response400(c, nil, err.Error())
-//	}
-//
-//	// success
-//	return util.Response200(c, nil, "")
-//}

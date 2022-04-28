@@ -11,10 +11,11 @@ type Bot struct{}
 
 // Create godoc
 // @Summary      create bot
-// @Description  create bot
+// @Description  admin create bot
 // @Tags         bots
 // @Accept       json
 // @Produce      json
+// @param Authorization header string true "Authorization"
 // @Param        account  body      dto.Bot  true  "create bot"
 // @Success      200  {object}  util.Response
 // @Failure      400  {object}  util.Response
@@ -35,7 +36,7 @@ func (b Bot) Create(c echo.Context) error {
 
 // GetByID godoc
 // @Summary      get bot by ID
-// @Description  get bot by ID
+// @Description  admin get bot by ID
 // @Tags         bots
 // @Accept       json
 // @Produce      json
@@ -57,32 +58,9 @@ func (b Bot) GetByID(c echo.Context) error {
 	return util.Response200(c, bot, "")
 }
 
-//// GetList ...
-//func (b Bot) GetList(c echo.Context) error {
-//	page, _ := strconv.Atoi(c.QueryParam("page"))
-//	limit, _ := strconv.Atoi(c.QueryParam("limit"))
-//
-//	// process
-//	bots, totalDocs, err := botService.GetList(page, limit)
-//	if err != nil {
-//		return util.Response400(c, nil, err.Error())
-//	}
-//
-//	data := map[string]interface{}{
-//		"list": bots,
-//		"paginationInfo": map[string]interface{}{
-//			"page":  page,
-//			"limit": limit,
-//			"total": totalDocs,
-//		},
-//	}
-//
-//	return util.Response200(c, data, "")
-//}
-
 // GetList godoc
 // @Summary      get list bot
-// @Description  get list bot by
+// @Description  admin get list bot by
 // @Tags         bots
 // @Accept       json
 // @Produce      json
@@ -110,7 +88,7 @@ func (b Bot) GetList(c echo.Context) error {
 
 // UpdateByID godoc
 // @Summary      update bot by id
-// @Description  update bot by id
+// @Description  admin update bot by id
 // @Tags         bots
 // @Accept       json
 // @Produce      json
@@ -136,7 +114,7 @@ func (b Bot) UpdateByID(c echo.Context) error {
 
 // DeleteByID godoc
 // @Summary      delete bot by id
-// @Description  delete bot by id
+// @Description  admin delete bot by id
 // @Tags         bots
 // @Accept       json
 // @Produce      json

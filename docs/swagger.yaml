@@ -127,6 +127,11 @@ paths:
       - application/json
       description: create bot
       parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
       - description: create bot
         in: body
         name: account
@@ -614,7 +619,7 @@ paths:
     post:
       consumes:
       - application/json
-      description: registering an account
+      description: player registering an account
       parameters:
       - description: register account
         in: body
